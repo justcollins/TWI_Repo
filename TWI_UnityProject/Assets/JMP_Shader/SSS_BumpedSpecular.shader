@@ -5,12 +5,12 @@
 
 Shader "Custom/SSS_BumpedSpecular" {
 	Properties {
-		_Color ("Main Color", Color) = (1,1,1,1)
+		_Color ("Diffuse Color", Color) = (1,1,1,1)
 		_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 		_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
-		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}		
+		_MainTex ("Diffuse Map", 2D) = "white" {}		
 		_BumpSize("Bump Size", float) = 1
-		_BumpMap ("Normalmap", 2D) = "bump" {}
+		_BumpMap ("Normal Map", 2D) = "bump" {}
 		
 		_TransDistortion ("Trans. Distortion",Range(0,0.5)) = 0.1
 		_TransPower("Trans. Power",Range(1.0,16.0)) = 1.0
@@ -146,45 +146,6 @@ Shader "Custom/SSS_BumpedSpecular" {
 			fixed4 c;
 			c.rgb = diffCol + specCol * 2;
 			c.a = s.Alpha + _LightColor0.a * _SpecColor.a * spec * atten;
-			return c;
-		}
-
-		inline fixed4 LightingTransPhong (TransSurfaceOutput s, fixed3 lightDir, half3 viewDir, fixed atten)
-		{	
-			half atten2 = (atten * 2);
-
-			fixed3 diffCol = fixed3(0, 0, 0);
-		
-			half NL = dot(s.Normal, lightDir);
-		
-			half3 transLight = lightDir + s.Normal * _TransDistortion;
-			float VinvL = saturate(dot(viewDir, -transLight));
-
-			float transDot = pow(VinvL,_TransPower);
-			//for advanced translucency
-				transDot *= _TransScale;
-		
-			half3 lightAtten = _LightColor0.rgb * atten2;
-				//lightAtten *= _TransDirectianalLightStrength;
-				//lightAtten *= _TransOtherLightsStrength;
-				#ifdef UNITY_PASS_FORWARDBASE
-					lightAtten *= _TransDirectianalLightStrength;
-				#else
-					lightAtten *= _TransOtherLightsStrength;
-				#endif
-
-			half3 transComponent = (transDot + _Color.rgb);
-		
-			//for advanced translucency
-				half3 subSurfaceComponent = s.TransCol * _TransScale;	
-				transComponent = lerp(transComponent, subSurfaceComponent, transDot);		
-				transComponent += (1 - NL) * s.TransCol * _LightColor0.rgb * _TransBackfaceIntensity;
-
-			diffCol = s.Albedo * (_LightColor0.rgb * atten2 * NL + lightAtten * transComponent);
-		
-			fixed4 c; 
-			c.rgb = diffCol;
-			c.a = s.Alpha + _LightColor0.a * atten;
 			return c;
 		}
 
