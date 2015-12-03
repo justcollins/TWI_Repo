@@ -3,12 +3,13 @@
 // This shader is for educational purposes only in order to better understand Subsurface Scattering.
 // Original Code belongs to Davit Naskidashvili
 
-Shader "Custom/SSS_Translucency1" {
+Shader "Custom/SSS_Translucency2" {
 	Properties {
-		_Color ("Diffuse Color", Color) = (1,1,1,1)
+		_Color ("Main Color", Color) = (1,1,1,1)
 		_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
 		_Shininess ("Shininess", Range (0.03, 1)) = 0.078125
-		_MainTex ("Diffuse Map", 2D) = "white" {}		
+		_MainTex ("Texture Map", 2D) = "white" {} //base rgb
+		_TranspVal ("Transparency Value", Range(0,1)) = 0.5	
 		_BumpSize("Bump Size", float) = 1
 		_BumpMap ("Normal Map", 2D) = "bump" {}
 		
@@ -31,15 +32,17 @@ Shader "Custom/SSS_Translucency1" {
 	}
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" "SSSType"="Legacy/PixelLit"}
+		Tags { "RenderType"="Transparent" }
 		LOD 400
+		Blend SrcAlpha OneMinusSrcAlpha 
 
 		CGPROGRAM
-		#pragma surface surf TransBlinnPhong noambient nodynlightmap
+		#pragma surface surf TransBlinnPhong noambient nodynlightmap alpha:premul
 		#pragma target 3.0
 
 		fixed4 _Color;
 		sampler2D _MainTex;
+		float _TranspVal;
 
 		half _TransDistortion;
 		half _TransPower;
@@ -78,15 +81,7 @@ Shader "Custom/SSS_Translucency1" {
 			//for bump
 			float2 uv_BumpMap;
 		};
-
-		struct appdata 
-		{
-			float4 vertex : POSITION;
-        	float4 tangent : TANGENT;
-        	float3 normal : NORMAL;
-        	float2 texcoord : TEXCOORD0;
-		};
-
+		
 		struct TransSurfaceOutput
 		{
 			fixed3 Albedo;
@@ -101,26 +96,28 @@ Shader "Custom/SSS_Translucency1" {
 	/////////////////////////////////////////////////////////////////// lighting
 		inline fixed4 LightingTransBlinnPhong (TransSurfaceOutput s, fixed3 lightDir, half3 viewDir, fixed atten)
 		{	
-			half atten2 = (atten * 2);
+			//=========LIGHTING EQUATION
+			half atten2 = (atten * 2); // attenuation squared
 
+			//initializing variables
 			fixed3 diffCol;
 			fixed3 specCol;
 			float spec;	
 		
-			half NL = dot (s.Normal, lightDir);
+			half NL = dot (s.Normal, lightDir); // dot product of surface normals and light direction
 
-			half3 h = normalize (lightDir + viewDir);
+			half3 h = normalize (lightDir + viewDir); // dot product of view direction and light direction
 		
-			float nh = max (0, dot (s.Normal, h));
-			spec = pow (nh, s.Specular*128.0) * s.Gloss;
+			float nh = max (0, dot (s.Normal, h)); //dot product of normal to h
+			spec = pow (nh, s.Specular*128.0) * s.Gloss; // specular property
 		
-			diffCol = (s.Albedo * _LightColor0.rgb * NL) * atten2;
-			specCol = (_LightColor0.rgb * _SpecColor.rgb * spec) * atten2;
+			diffCol = (s.Albedo * _LightColor0.rgb * NL) * atten2; // surface color, light color, and diffuse calculation
+			specCol = (_LightColor0.rgb * _SpecColor.rgb * spec) * atten2; // specular color, light clor, and specular calculation
 
-			half3 transLight = lightDir + s.Normal * _TransDistortion;
-			float VinvL = saturate(dot(viewDir, -transLight));
+			half3 transLight = lightDir + s.Normal * _TransDistortion; // translight; used with transdistortion to shift the trans normals
+			float VinvL = saturate(dot(viewDir, -transLight)); //used
 		
-			float transDot = pow(VinvL,_TransPower);
+			float transDot = pow(VinvL,_TransPower); // power of translucency
 			//for advanced translucency
 			transDot *= _TransScale;
 
@@ -133,47 +130,46 @@ Shader "Custom/SSS_Translucency1" {
 					lightAtten *= _TransOtherLightsStrength;
 				#endif
 
-			half3 transComponent = (transDot + _Color.rgb);
+			half3 transComponent = (transDot + _Color.rgb); // translucent component
 
 			//for advanced translucency
 				half3 subSurfaceComponent = s.TransCol * _TransScale;	
 				transComponent = lerp(transComponent, subSurfaceComponent, transDot);		
 				transComponent += (1 - NL) * s.TransCol * _LightColor0.rgb * _TransBackfaceIntensity;
 
-			diffCol = s.Albedo * (_LightColor0.rgb * atten2 * NL + lightAtten * transComponent);
-
+			diffCol = s.Albedo * (_LightColor0.rgb * atten2 * NL + lightAtten * transComponent); //final diffuse color
 		
 			fixed4 c;
-			c.rgb = diffCol + specCol * 2;
-			c.a = s.Alpha + _LightColor0.a * _SpecColor.a * spec * atten;
+			c.rgb = diffCol + specCol * 2; //everything is put together
+			c.a = s.Alpha + _LightColor0.a * _SpecColor.a * spec * atten; 
 			return c;
 		}
 
 		void surf (Input IN, inout TransSurfaceOutput o)
 		{
-			half4 tex = tex2D(_MainTex, IN.uv_MainTex);
-			o.Albedo = tex.rgb * _Color.rgb;
-			o.Alpha = tex.a * _Color.a;
+			half4 tex = tex2D(_MainTex, IN.uv_MainTex); //takes the diffuse texture
+			o.Albedo = tex.rgb * _Color.rgb; //multiplies the diffuse texture and the main color; sets the output's albedo to the result
+			o.Alpha = tex.a * _Color.a * _TranspVal; //multiplies the diffuse texture's alpha value and the main color's alpha value and multiplies it with the transparency value; sets the output's alha to the result
 			
 			//for advanced translucency
-			o.TransCol = tex2D(_TransMap,IN.uv_MainTex).rgb * _TransColor.rgb;
+			o.TransCol = tex2D(_TransMap,IN.uv_MainTex).rgb * _TransColor.rgb; //takes the transmap and sets the output's transcol value as a result
 			
 			//for specular
-			o.Gloss = tex.a;
-			o.Specular = _Shininess;
+			o.Gloss = tex.a; //the gloss takes its value from the texture's alpha value as well
+			o.Specular = _Shininess; //specular takes its value from the shininess property
 
 			//bumped
-			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
+			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap)); //normals are unpacked and put together in the output
 			o.Normal.x *= _BumpSize;
 			o.Normal.y *= _BumpSize;
 			o.Normal = normalize(o.Normal);
 
-			o.Emission += o.Albedo * _Emission * o.Alpha;
+			o.Emission += o.Albedo * _Emission * o.Alpha; //emission takes its value from the albedo multiplied with the emission property multiplied by the alpha
 
 			//for rim light
-			if (_Rim_On == 1) {
-			half rim = 1.0 - saturate(dot (Unity_SafeNormalize(IN.viewDir), o.Normal));
-		        o.Emission += _Rim_Color.rgb * pow (rim, _Rim_Pow);
+			if (_Rim_On == 1) { // if the rim light is on, do the following
+				half rim = 1.0 - saturate(dot (Unity_SafeNormalize(IN.viewDir), o.Normal)); // calculates the rim light based on the normals
+		        o.Emission += _Rim_Color.rgb * pow (rim, _Rim_Pow); // adds to the emission property
 		    }
 		}
 
