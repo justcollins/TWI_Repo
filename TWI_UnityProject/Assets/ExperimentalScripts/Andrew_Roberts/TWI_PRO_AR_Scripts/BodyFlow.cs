@@ -1,9 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class BodyFlow : MonoBehaviour {
 
-    public PlayerStats myShip;
+    public CompleteMovement_01 myShip;
+    public int sectionNumber;
+    public int blood;
+    public int pressureChange;
+    public int timeMax;
+    private float curTime;
+    
 
 	// Use this for initialization
     void Start(){
@@ -17,26 +24,36 @@ public class BodyFlow : MonoBehaviour {
 
     void OnTriggerEnter(Collider shipCol)
     {
+        Debug.Log(gameObject.name + " has hit " + shipCol.name);
         
+
     }
 
 
     void OnTriggerStay(Collider shipCol)
     {
         //Debug.Log("Inside");
-        
+        myShip.setSectionInt(sectionNumber);
+        myShip.setBloodForce(blood);
+
+        curTime += Time.deltaTime;
+        if (curTime >= timeMax)
+        {
+            myShip.setCabinPressure(pressureChange);
+            curTime = 0;
+        }
     }
 
     void OnTriggerExit(Collider shipCol)
     {
-        //Debug.Log("Exit");
-        if (myShip.Section == 0)
+        /*Debug.Log("Exit");
+        Debug.Log(myShip.getSectionInt());
+        if (myShip.getSectionInt() == 0)
         {
-            myShip.Section = 1;
+            myShip.setSectionInt(1);
+            Debug.Log(myShip.getSectionInt());
         }
-        if (myShip.Section == 1)
-        {
-            myShip.Section = 0;
-        }
+        if (myShip.getSectionInt() == 0)
+            myShip.setSectionInt(0);*/
     }
 }
