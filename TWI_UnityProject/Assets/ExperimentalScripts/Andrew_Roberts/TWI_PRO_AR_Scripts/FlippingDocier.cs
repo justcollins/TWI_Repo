@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Flipping Dossier is used to interact with the dossier in game, using the 'P' button right now you can switch between predetermined materials that are going to be the pages of the current missions Dossier
+/// Yes I understand that the file is currently incorrectly named "docier" but deal with it, because it works
+/// </summary>
+
+
 public class FlippingDocier : MonoBehaviour {
 
     public Material[] images;

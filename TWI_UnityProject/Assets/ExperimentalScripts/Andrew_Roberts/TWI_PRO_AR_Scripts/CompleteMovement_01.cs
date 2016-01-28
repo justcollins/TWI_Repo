@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// This is the Ship's base class, not named to the best conventions. Allows for the movement of the ship based on Kien's initial design.
+/// Also works in conjunction with "BodyFlow.cs" to make use of the worlds blood flow for forced movement of the ship through the body.
+/// Also contains the variables for which the game will recognize the ships stats: Cabin Pressure and Oxygen. Will be used with energy as well.
+/// </summary>
+ 
 public class CompleteMovement_01 : MonoBehaviour
 {
 
