@@ -30,7 +30,7 @@ public class Submarine_Resources : MonoBehaviour {
             setOxygenLevel(1);
             setEnergyLevel(1);
             curTime = 0;
-            Debug.Log(getShipEnergy());
+            
         }
 
         
