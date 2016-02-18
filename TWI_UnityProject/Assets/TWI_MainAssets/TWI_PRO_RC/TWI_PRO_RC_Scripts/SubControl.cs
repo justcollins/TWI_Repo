@@ -12,9 +12,11 @@ public class SubControl : MonoBehaviour {
 	
 	float UpDownVelocity 			= 0.0f; 
 	public float maxThrustValue 	= 10.0f;		//Max value to reach for thruster
-    public float minThrustValue 	= -2.0f;       //Min value for the thruster
+    public float minThrustValue 	= -10.0f;       //Min value for the thruster
 	public float thrust 			= 1.0f;			//For Debugging purpose otherwise should be private
-	
+    public float speed              = 1.0f;
+    public float boost              = 5.0f;
+
 	float UpDownValue;
 	float UpDown;
 	float yUpDown;
@@ -30,46 +32,102 @@ public class SubControl : MonoBehaviour {
 	
 	bool isEngineOn = false;
 
-    float verMoveScroll = Input.GetAxis("Mouse ScrollWheel"); 
+    bool ForBack = true;
+
+    bool Boost = true;
+
 
 	void FixedUpdate()
 	{
 		if (isEngineOn) //when the engine is on
 		{
             //Left Control = Drag
- 
-                if (Input.GetMouseButtonDown(2)) //and middle mouse button
+
+            if (Input.GetMouseButtonDown(2)) // middle mouse button click
+            {
+                ForBack = !ForBack;
+
+                //thrust = 0.0f;
+            }
+
+            //slowly braking
+              if (ForBack)
                 {
-                    //if (thrust > minThrustValue) // thrust is greter than minimum
-                        //thrust -= 2.0f; // remove (brake) 2 from thrust
-                    //else
-                        //thrust = minThrustValue; //otherwise thrust is same as min
-                    thrust = 0; // if i want to brake straight to zero
+                    if (thrust <= 0f)
+                        thrust += 0.3f;
+                    
                 }
+                else
+                {
+                    if (thrust >= 0f)
+                        thrust -= 0.3f;
+                   
+                }
+
+            //for strife
 
 				if(Input.GetMouseButton (1)) //if i press right mouse button 
 				{
 					StrifeMove (); // do strife movements (bellow)
 				}
-			
 
-			float VerMoveScroll = Input.GetAxis("Mouse ScrollWheel");
-			
-			if (VerMoveScroll > 0f) // if the middle mouse button is more than zero 
-			{
-				if(thrust <= maxThrustValue)
-					thrust += 1.0f;
-				else
-					thrust = maxThrustValue;
-			}
-			
-			else if (VerMoveScroll < 0f) // if middle mouse button is less than zero 
-			{
-				if(thrust >= minThrustValue)
-					thrust -= 1.0f;
-				else
-					thrust = minThrustValue;
-			}
+                if(Input.GetKeyDown(KeyCode.LeftControl))
+                {
+                    Boost = !Boost;
+
+                    Debug.Log("CTRL is pressed");
+
+                    if (Boost == true)
+                    {
+                        thrust = thrust + boost;
+                    }
+                    else
+                    {
+                        thrust = thrust - boost;
+                    }
+                }
+
+            //scrollwheel movement
+                float VerMoveScroll = Input.GetAxis("Mouse ScrollWheel");
+
+                if (ForBack)
+                {
+
+                    if (VerMoveScroll > 0f) // for forward
+                    {
+                        if (thrust <= maxThrustValue)
+                            thrust += speed;
+                        else
+                            thrust = maxThrustValue;
+                    }
+                    else if (VerMoveScroll < 0f) //to stop
+                    {
+                        if (thrust >= 0f)
+                            thrust -= speed/4;
+                        else
+                            thrust = 0f;
+                    }
+                }
+
+                else
+                {
+
+                    if (VerMoveScroll > 0f)//for reverse
+                    {
+                        if (thrust >= minThrustValue) //for forward on reverse
+                            thrust -= speed;
+                        else
+                            thrust = minThrustValue;
+                    }
+                    else if (VerMoveScroll < 0f) // to stop 
+                    {
+                        if (thrust <= 0f)
+                            thrust += speed/4;
+                        else
+                            thrust = 0f;
+                    }
+                }
+
 
 			//Spacebar = Thrust
 			//NOTE:
@@ -97,6 +155,7 @@ public class SubControl : MonoBehaviour {
 				Quaternion.Slerp(transform.rotation, 
 			              Quaternion.EulerRotation(Pitch, Yaw, 0), Time.fixedDeltaTime * 1.5f);
 		}
+
 		else
 		{
 			if(thrust > minThrustValue)
@@ -128,16 +187,16 @@ public class SubControl : MonoBehaviour {
 	void StrifeMove ()// strife movements
 	{
 		if (Input.GetKey (UP))//move up
-			transform.Translate (Vector3.up * 10f * Time.fixedDeltaTime);
+			transform.Translate (Vector3.up * 10f * Time.deltaTime);
 
 		if (Input.GetKey (DOWN))//move down
-			transform.Translate (Vector3.down * 10f * Time.fixedDeltaTime);
+			transform.Translate (Vector3.down * 10f * Time.deltaTime);
 
 		if (Input.GetKey (LEFT))//move left
-			transform.Translate (Vector3.left * 10f * Time.fixedDeltaTime);
+			transform.Translate (Vector3.left * 10f * Time.deltaTime);
 
 		if (Input.GetKey (RIGHT))//move right
-			transform.Translate (Vector3.right * 10f * Time.fixedDeltaTime);
+			transform.Translate (Vector3.right * 10f * Time.deltaTime);
 	}
 	
 	void Update ()
