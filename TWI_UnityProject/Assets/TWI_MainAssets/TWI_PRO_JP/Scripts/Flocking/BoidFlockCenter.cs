@@ -29,8 +29,8 @@ public class BoidFlockCenter : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == playerTag) {
 			ChangeTarget(other.transform);
-		} else if ( other.GetComponent<BoidWaypoint>() ) {
-			nearestWaypoint = other.GetComponent<BoidWaypoint>().next.transform;
+		} else if ( other.GetComponent<Waypoint>() ) {
+			nearestWaypoint = other.GetComponent<Waypoint>().next.transform;
 			ChangeTarget(nearestWaypoint);
 		}
 	}
