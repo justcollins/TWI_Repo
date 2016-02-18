@@ -13,11 +13,13 @@ public class Submarine_Resources : MonoBehaviour {
     //FOR TESTING VARIABLES
     public float energyTimer;
 
+    public int shipSpeed;
+
 	// Use this for initialization
 	void Start () {
         shipEnergy = 100;
-        oxygenLevel = 100;
-        cabinPressure = 0;
+        oxygenLevel = 15;
+        cabinPressure = 70;
         curTime = 0.0f;
         oxyTimer = 1.5f;
 	}
@@ -29,6 +31,8 @@ public class Submarine_Resources : MonoBehaviour {
         {
             setOxygenLevel(1);
             setEnergyLevel(1);
+            setCabinPressure(1);
+            setSpeed(5);
             curTime = 0;
             
         }
@@ -65,4 +69,15 @@ public class Submarine_Resources : MonoBehaviour {
     {
         return shipEnergy;
     }
+
+    public void setSpeed(int newSpeed)
+    {
+        shipSpeed += newSpeed;
+    }
+
+    public int getSpeed()
+    {
+        return shipSpeed;
+    }
+
 }
