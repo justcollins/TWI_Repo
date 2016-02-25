@@ -8,7 +8,8 @@ public class SubControl : MonoBehaviour {
 	public KeyCode LEFT;
 	public KeyCode RIGHT;
 
-	public KeyCode ENGINE_ON;		//For Turn on and off the engine
+	public KeyCode ENGINE_ON;//For Turn on and off the engine
+    public Submarine_Resources subRes;
 	
 	float UpDownVelocity 			= 0.0f; 
 	public float maxThrustValue 	= 10.0f;		//Max value to reach for thruster
@@ -36,9 +37,26 @@ public class SubControl : MonoBehaviour {
 
     bool Boost = true;
 
+    //BloodForce
+    private int sectionInt;
+    public Rigidbody shipRB;
+    private float bloodForce;
+    private Vector3 worldForce;
+    private int pressure;
+
 
 	void FixedUpdate()
 	{
+
+        if (sectionInt == 0)
+            worldForce = new Vector3(0.0f, 0.0f, 1.0f);
+        if (sectionInt == 1)
+            worldForce = new Vector3(1.0f, 0.0f, 1.0f);
+        if (sectionInt == 2)
+            worldForce = new Vector3(0.0f, 0.0f, 0.5f);
+
+        shipRB.AddForce(worldForce * bloodForce);
+
 		if (isEngineOn) //when the engine is on
 		{
             //Left Control = Drag
@@ -64,7 +82,7 @@ public class SubControl : MonoBehaviour {
                    
                 }
 
-            //for strife
+            //for strafe
 
 				if(Input.GetMouseButton (1)) //if i press right mouse button 
 				{
@@ -201,8 +219,21 @@ public class SubControl : MonoBehaviour {
 	
 	void Update ()
 	{
-		if(Input.GetKeyDown(ENGINE_ON))
-		   isEngineOn = !isEngineOn;
+        if (Input.GetKeyDown(ENGINE_ON) && subRes.getShipEnergy() > 0)
+            isEngineOn = !isEngineOn;
+
+        if (subRes.getShipEnergy() <= 0)
+        {
+            isEngineOn = false;
+            if (thrust > 0)
+                thrust -= 0.5f;
+            else if (thrust < 0)
+                thrust += 0.5f;
+            else if (thrust <= 1.0f || thrust >= -1.0f)
+                thrust = 0;
+
+        }
+        
     }
 	
 	float KeyValue(KeyCode A,KeyCode B, float Value , float yValue , float _float , float SmoothTime)
@@ -239,4 +270,40 @@ public class SubControl : MonoBehaviour {
 		else if (UpDownVelocity < 0.1f)
 			UpDownVelocity = 0.1f;
 	}
+
+    public bool getForBack()
+    {
+        return ForBack;
+    }
+    public bool getEngineOn()
+    {
+        return isEngineOn;
+    }
+    public void setSectionInt(int newSect)
+    {
+        sectionInt = newSect;
+    }
+
+    public int getSectionInt()
+    {
+        return sectionInt;
+    }
+
+    public void setBloodForce(float newBlood)
+    {
+        bloodForce = newBlood;
+    }
+
+    public float getBloodForce()
+    {
+        return bloodForce;
+    }
+    public void setPressure(int pres)
+    {
+        pressure = pres;
+    }
+    public int getPressure()
+    {
+        return pressure;
+    }
 }
