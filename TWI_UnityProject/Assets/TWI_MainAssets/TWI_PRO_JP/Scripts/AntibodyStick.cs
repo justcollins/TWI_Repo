@@ -20,6 +20,19 @@ public class AntibodyStick : MonoBehaviour {
 			c.gameObject.GetComponent<BoidFlocking>().StickToOther(this.gameObject);
 		}
 	}
+	
+	void ClearJoints() {
+		FixedJoint fj = gameObject.GetComponent<FixedJoint> ();
+		if ( fj ) {
+			if (fj.connectedBody == null) {
+				Destroy (fj);
+			}
+		}
+	}
+	
+	void FixedUpdate() {
+		ClearJoints ();
+	}
 }
 
 /// <comment>

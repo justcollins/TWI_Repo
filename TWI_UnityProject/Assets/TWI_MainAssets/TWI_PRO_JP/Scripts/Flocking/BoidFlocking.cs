@@ -51,10 +51,14 @@ public class BoidFlocking : MonoBehaviour {
 
     void OnCollisionEnter(Collision col) {
 		if (col.gameObject.tag == "Player Weapon") {
-			controller.RemoveBoid(this);
-			GameObject.Destroy(this.gameObject);
+			Destroy ();
 		}
     }
+
+	public void Destroy() {
+		controller.RemoveBoid(this);
+		GameObject.Destroy(this.gameObject);
+	}
 
 	public void StickToOther(GameObject go) {
 		if (controller.stickToPlayer) {
