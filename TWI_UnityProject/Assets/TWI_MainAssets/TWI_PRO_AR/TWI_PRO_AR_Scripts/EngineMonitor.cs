@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+
 public class EngineMonitor : MonoBehaviour {
 
     public GameObject[] battery;
@@ -20,6 +21,7 @@ public class EngineMonitor : MonoBehaviour {
     public Renderer baseRend;
     public Material baseMat;
     public Submarine_Resources sub;
+    public SubControl subCon;
 
     private int scannerState = 0;
     private int laserState = 0;
@@ -115,8 +117,8 @@ public class EngineMonitor : MonoBehaviour {
                 setInstState(0);
             }
         }
-//-----------------------TAB------------------------------------
-        if (Input.GetKeyDown(KeyCode.Tab))
+//-----------------------ENG ON------------------------------------
+        if (Input.GetKeyDown(subCon.ENGINE_ON))
         {
             if (engState == 0)
             {
@@ -138,10 +140,15 @@ public class EngineMonitor : MonoBehaviour {
             
         }
 
+        if (sub.getShipEnergy() <= 0)
+        {
+            setEngState(0);
+        }
+
 //---------------------FWDREV
         if (engState == 1)
         {
-            if (FwdRevState == 1)
+            if (subCon.getForBack())
             {
                 Fwd_Lite.SetActive(true);
                 Rev_Lite.SetActive(false);
@@ -162,7 +169,7 @@ public class EngineMonitor : MonoBehaviour {
 
 //---------------------Speed Handle
 
-        Speed_Indic.value = sub.getSpeed();
+        Speed_Indic.value = Mathf.Abs(subCon.thrust);
 
 //---------------------Oxygen
 

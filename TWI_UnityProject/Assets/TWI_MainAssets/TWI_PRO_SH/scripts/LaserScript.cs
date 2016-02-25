@@ -12,12 +12,18 @@ public class LaserScript : MonoBehaviour
 	Light light;
     CursorLockMode lockCursor;
 
+	public bool useLight = false;
+	[Range(0f, 10f)] public float damageDone;
+
 	void Start () 
 	{
 		line = gameObject.GetComponent<LineRenderer>();
 		line.enabled = false; //the pink square is gone at end of line
-        light = gameObject.GetComponent<Light>();
-		light.enabled = false;
+
+		if (useLight) {
+			light = gameObject.GetComponent<Light> ();
+			light.enabled = false;
+		}
 
         lockCursor = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -35,11 +41,10 @@ public class LaserScript : MonoBehaviour
 	IEnumerator FireLaser() //coroutine needed to keep laser on
 	{
 		line.enabled = true; //make the line visible
-		light.enabled = true;
+		if (useLight) {light.enabled = true; }
 
 		while(Input.GetButton ("Fire1")) //GetButton down means while the button is pushed
 		{
-			//line.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(0, Time.time);
 
             Ray ray = new Ray(transform.position, transform.forward); //.position gets the position of the gun, .forward means wherever the x-axis is facing
 			RaycastHit hit; //so laser will stop if it collides w/something
@@ -55,6 +60,8 @@ public class LaserScript : MonoBehaviour
 					//hit the obj w/rigidbody with 5 units of force AT obj's arm,head,feet, etc
 					hit.rigidbody.AddForceAtPosition(transform.forward * 5, hit.point);
 				}
+
+				TouchEnemies (hit);
 			}
 			else//if not, let the laser ray go on until it reaches the limit we put 
 			{
@@ -64,7 +71,27 @@ public class LaserScript : MonoBehaviour
 			yield return null; //every frame it'll keep looping itself while button is pushed
 		}
 		line.enabled = false; //once unpushed, make the line invisible again
-		light.enabled = false;
+		if (useLight) { light.enabled = false; }
 	}
 
+	void TouchEnemies(RaycastHit _h) {
+		if (_h.transform.tag == "enemy") {
+			EnemyHealth eh;
+			eh = _h.transform.gameObject.GetComponent<EnemyHealth>();
+
+			if (eh) {
+				switch((int)eh.type) {
+					case 1: //tagger
+					BoidFlocking bf;
+					bf = eh.GetComponent<BoidFlocking>();
+					bf.DestroyMe();
+					break;
+
+					case 2: //macrophage
+					eh.AddHealth(-damageDone);
+					break;
+				}
+			}
+		}
+	}
 }
