@@ -15,8 +15,11 @@ public class SubControl : MonoBehaviour {
     public float minThrustValue 	= -10.0f;       //Min value for the thruster
 	public float thrust 			= 1.0f;			//For Debugging purpose otherwise should be private
     public float speed              = 1.0f;
-    public float boost              = 5.0f;
 
+    public float boost              = 0.0f;
+    public float boostTimer         = 0.0f;
+    public float resetBTimer        = 3.0f;
+ 
 	float UpDownValue;
 	float UpDown;
 	float yUpDown;
@@ -34,7 +37,7 @@ public class SubControl : MonoBehaviour {
 
     bool ForBack = true;
 
-    bool Boost = true;
+    bool BoostOn = false;
 
 
 	void FixedUpdate()
@@ -71,21 +74,21 @@ public class SubControl : MonoBehaviour {
 					StrifeMove (); // do strife movements (bellow)
 				}
 
-                if(Input.GetKeyDown(KeyCode.LeftControl))
+                /* 
+                 * BOOST 
+                 */
+
+                if (Input.GetKeyDown(KeyCode.LeftControl) && BoostOn == false)
                 {
-                    Boost = !Boost;
-
-                    Debug.Log("CTRL is pressed");
-
-                    if (Boost == true)
-                    {
-                        thrust = thrust + boost;
-                    }
-                    else
-                    {
-                        thrust = thrust - boost;
-                    }
+                    BoostOn = true;
+                    boostTimer = resetBTimer;
                 }
+             
+
+                //if (Boost)
+                //    thrust = thrust + boost;
+                //else
+                //    thrust = thrust - boost;
 
             //scrollwheel movement
                 float VerMoveScroll = Input.GetAxis("Mouse ScrollWheel");
@@ -135,7 +138,7 @@ public class SubControl : MonoBehaviour {
 			//If power runs out then the thrust must power off.
 
 
-			transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
+			transform.position += transform.forward * Time.fixedDeltaTime * (thrust + boost); // for moving forward
 
 
 			UpDown = KeyValue(UP,DOWN , UpDown, yUpDown, 1.5f, 0.1f);
@@ -153,7 +156,7 @@ public class SubControl : MonoBehaviour {
 
 			transform.rotation = 
 				Quaternion.Slerp(transform.rotation, 
-			              Quaternion.EulerRotation(Pitch, Yaw, 0), Time.fixedDeltaTime * 1.5f);
+			             Quaternion.EulerRotation(Pitch, Yaw, 0), Time.fixedDeltaTime * 1.5f);
 		}
 
 		else
@@ -179,7 +182,7 @@ public class SubControl : MonoBehaviour {
 			
 			transform.rotation = 
 				Quaternion.Slerp(transform.rotation, 
-				                 Quaternion.EulerRotation(Pitch, Yaw, 0), Time.fixedDeltaTime * .5f);
+				                Quaternion.EulerRotation(Pitch, Yaw, 0), Time.fixedDeltaTime * .5f);
 		}
 
 	}
@@ -203,6 +206,24 @@ public class SubControl : MonoBehaviour {
 	{
 		if(Input.GetKeyDown(ENGINE_ON))
 		   isEngineOn = !isEngineOn;
+
+        if (BoostOn)
+        {
+            if (boostTimer > 0)
+            {
+                boostTimer -= Time.deltaTime;
+                if (thrust > 0)
+                    boost = 15;
+                else
+                    boost = -15;
+            }
+            else
+            {
+                boost = 0;
+                BoostOn = false;
+            }
+
+        }
     }
 	
 	float KeyValue(KeyCode A,KeyCode B, float Value , float yValue , float _float , float SmoothTime)
