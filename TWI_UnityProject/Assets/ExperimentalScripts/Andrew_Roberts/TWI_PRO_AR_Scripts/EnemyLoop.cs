@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+/// <summary>
+/// Creates a Point based movement for enemies in the world, currently outdated by Jose.
+/// </summary>
+
 public class EnemyLoop : MonoBehaviour {
 
     public Transform[] patrolPoints;
