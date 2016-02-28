@@ -12,13 +12,16 @@ public class BoidFlocking : MonoBehaviour {
 
 	internal BoidController controller;
 	private Rigidbody rb;
+	public string playerWeaponTag = "Player Weapon";
+
+	private bool attached = false;
 
 	void Awake() {
 		rb = GetComponent<Rigidbody> ();
 	}
 
 	IEnumerator Start() {
-		while (true) {
+		while (!attached) {
 			if (controller) {
 				rb.velocity += CalculateSteering() * Time.deltaTime;
 
@@ -29,7 +32,7 @@ public class BoidFlocking : MonoBehaviour {
 				} else if (speed < controller.minVelocity) {
 					rb.velocity = rb.velocity.normalized*controller.minVelocity;
 				}
-				yield return new WaitForSeconds( Random.Range (0.3f, 0.5f) );
+				yield return new WaitForSeconds( Random.Range (controller.lowerboundWait, controller.upperboundWait) );
 			}
 		}
 	}
@@ -44,6 +47,26 @@ public class BoidFlocking : MonoBehaviour {
 		Vector3 follow = controller.chasee.position - transform.position;
 
 		return (center + velocity + follow * 2 + randomize);
+	}
+
+    void OnCollisionEnter(Collision col) {
+		if (col.gameObject.tag == "Player Weapon") {
+			DestroyMe ();
+		}
+    }
+
+	public void DestroyMe() {
+		controller.RemoveBoid(this);
+		GameObject.Destroy(this.gameObject);
+	}
+
+	public void StickToOther(GameObject go) {
+		if (controller.stickToPlayer) {
+			transform.parent = go.transform;
+			FixedJoint joint = go.AddComponent <FixedJoint> () as FixedJoint;
+			joint.connectedBody = this.rb;
+			attached = true;
+		}
 	}
 }
 
