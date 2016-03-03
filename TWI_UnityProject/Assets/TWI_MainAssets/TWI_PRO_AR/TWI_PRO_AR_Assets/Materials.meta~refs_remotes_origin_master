@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 0a8bebe092f9fdd41b9d78b10680c6b8
+folderAsset: yes
+timeCreated: 1456972205
+licenseType: Pro
+=======
+guid: c99c5d85ab7e19f47bbbfb5cd082fb79
+folderAsset: yes
+timeCreated: 1456657987
+licenseType: Free
+>>>>>>> refs/remotes/origin/master
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
