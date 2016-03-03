@@ -51,6 +51,9 @@ public class EngineMonitor : MonoBehaviour {
 //------------------------Q----------------------------------
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            setLaserState(0);
+            SC_Laser.SetActive(false);
+            EF_Field.SetActive(false);
             if (scannerState == 0)
             {
                 LR_Scan.SetActive(true);
@@ -66,12 +69,16 @@ public class EngineMonitor : MonoBehaviour {
             {
                 SR_Scan.SetActive(false);
                 setScanState(0);
-            } 
+            }
         }
+        
+        
 //------------------------E-----------------------------------
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("E");
+            setScanState(0);
+            LR_Scan.SetActive(false);
+            SR_Scan.SetActive(false);
             if (laserState == 0)
             {
                 SC_Laser.SetActive(true);
