@@ -5,13 +5,9 @@ using System.Collections;
 
 public class SubControl : MonoBehaviour {
 
-	public KeyCode UP;
-	public KeyCode DOWN;
-	public KeyCode LEFT;
-	public KeyCode RIGHT;
-
-	public KeyCode ENGINE_ON;//For Turn on and off the engine
+    //For Turn on and off the engine
     public Submarine_Resources subRes;
+    private KeyboardManager keyboard;
 	
 	float UpDownVelocity 			= 0.0f; 
 	public float maxThrustValue 	= 10.0f;		//Max value to reach for thruster
@@ -44,9 +40,14 @@ public class SubControl : MonoBehaviour {
     private int pressure;
 
 
+    void Start()
+    {
+        keyboard = FindObjectOfType<KeyboardManager>();
+    }
+
     void FixedUpdate()
     {
-
+        
         if (sectionInt == 0)
             worldForce = new Vector3(0.0f, 0.0f, 1.0f);
         if (sectionInt == 1)
@@ -57,10 +58,60 @@ public class SubControl : MonoBehaviour {
         shipRB.AddForce(worldForce * bloodForce);
 
         ///////////////////////// ENGINE ON ////////////////////
+       
+
+	}
+
+    //////////////////////////// STRAFE MOVEMENT /////////////////////////
+	void StrafeMove ()
+	{
+		if (Input.GetKey (keyboard.Up))    //move up//
+			transform.Translate (Vector3.up * 10f * Time.deltaTime);
+
+		if (Input.GetKey (keyboard.Down))  //move down//
+			transform.Translate (Vector3.down * 10f * Time.deltaTime);
+
+		if (Input.GetKey (keyboard.Left))  //move left//
+			transform.Translate (Vector3.left * 10f * Time.deltaTime);
+
+		if (Input.GetKey (keyboard.Right)) //move right//
+			transform.Translate (Vector3.right * 10f * Time.deltaTime);
+	}
+	
+	void Update ()
+	{
+        Debug.Log(thrust);
+        //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
+        if (Input.GetKeyDown(keyboard.EngineOn) && subRes.getShipEnergy() > 0)
+            isEngineOn = !isEngineOn;
+
+        //SHIP ENERGY//
+        if (subRes.getShipEnergy() <= 0)
+        {
+            isEngineOn = false;
+            if (thrust > 0)
+                thrust -= 0.5f;
+            else if (thrust < 0)
+                thrust += 0.5f;
+            else if (thrust <= 1.0f || thrust >= -1.0f)
+                thrust = 0;
+
+        }
+
+        if (Input.GetKeyDown(keyboard.Boost))
+        {
+            thrust = thrust + boost;
+        }
+
+        else if (Input.GetKeyUp(keyboard.Boost))
+        {
+            thrust = thrust - boost;
+        }
+
         if (isEngineOn)
         {
 
-            if (Input.GetMouseButtonDown(2)) // middle mouse button click
+            if (Input.GetKeyDown(keyboard.MiddleMouse)) // middle mouse button click
             {
                 ForBack = !ForBack;
 
@@ -83,154 +134,125 @@ public class SubControl : MonoBehaviour {
 
             //////////////////////// STRAFE /////////////////////
 
-            if (Input.GetMouseButton(1)) //if i press right mouse button 
+            if (Input.GetKey(keyboard.RightMouse)) //if i press right mouse button 
             {
                 StrafeMove(); // do strafe movements (bellow)
             }
 
             /////////////////////// BOOST ///////////////////////
-            if (Input.GetKeyDown(KeyCode.LeftControl))
+            //May change button - Error exists that it doesn't always seem to recognize GetKeyUp on the key.
+
+
+
+
+
+            //////////////////////// SHIP MOVEMENT ////////////////////
+
+            /*
+            USING THE MIDDLE MOUSE SCROLL FOR SPEED OF THE SHIP 
+            */
+            float VerMoveScroll = Input.GetAxis("Mouse ScrollWheel");
+
+            if (ForBack)
             {
-                thrust = thrust + boost;
+
+                if (VerMoveScroll > 0f) // for forward //
+                {
+                    if (thrust <= maxThrustValue)
+                    {
+                        thrust += speed;
+
+                    }
+                    else
+                    {
+                        thrust = maxThrustValue;
+
+                    }
+                }
+                else if (VerMoveScroll < 0f) //to slow down// 
+                {
+                    if (thrust >= 0f)
+                    {
+                        thrust -= speed / 4;
+
+                    }
+                    else
+                    {
+                        thrust = 0f;
+
+                    }
+                }
             }
 
-            if (Input.GetKeyUp(KeyCode.LeftControl))
+            else
             {
-                thrust = thrust - boost;
+
+                if (VerMoveScroll > 0f)//for reverse//
+                {
+                    if (thrust >= minThrustValue)
+                        thrust -= speed;
+                    else
+                        thrust = minThrustValue;
+                }
+                else if (VerMoveScroll < 0f) // to slow down in reverse// 
+                {
+                    if (thrust <= 0f)
+                        thrust += speed / 4;
+                    else
+                        thrust = 0f;
+                }
             }
 
-        //////////////////////// SHIP MOVEMENT ////////////////////
 
-        /*
-        USING THE MIDDLE MOUSE SCROLL FOR SPEED OF THE SHIP 
-        */
-        float VerMoveScroll = Input.GetAxis("Mouse ScrollWheel");
 
-        if (ForBack)
-        {
+            /////////////////////////// FORWARD MOVEMENT ///////////////////////
+            transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
 
-            if (VerMoveScroll > 0f) // for forward //
-            {
-                if (thrust <= maxThrustValue)
-                    thrust += speed;
-                else
-                    thrust = maxThrustValue;
-            }
-            else if (VerMoveScroll < 0f) //to slow down// 
-            {
-                if (thrust >= 0f)
-                    thrust -= speed / 4;
-                else
-                    thrust = 0f;
-            }
+
+            UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f);
+
+            UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
+            LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
+
+            //Pitch//
+            Pitch += UpDownTurn * Time.fixedDeltaTime;
+            Pitch = Mathf.Clamp(Pitch, -1.2f, 1.2f);
+
+            //Yaw//
+            Yaw += LeftRightTurn * Time.fixedDeltaTime;
+
+            //Rotation//
+            transform.rotation =
+                Quaternion.Slerp(transform.rotation,
+                          Quaternion.EulerRotation(Pitch, Yaw, 0.0f), Time.fixedDeltaTime * 1.5f);
         }
 
+       //////////////////////////////////ENGINE OFF/////////////////////////////
         else
         {
+            if (thrust > minThrustValue)
+                thrust -= 0.001f;
+            else
+                thrust = minThrustValue;
 
-            if (VerMoveScroll > 0f)//for reverse//
-            {
-                if (thrust >= minThrustValue)
-                    thrust -= speed;
-                else
-                    thrust = minThrustValue;
-            }
-            else if (VerMoveScroll < 0f) // to slow down in reverse// 
-            {
-                if (thrust <= 0f)
-                    thrust += speed / 4;
-                else
-                    thrust = 0f;
-            }
-        }
+            transform.position += transform.forward * Time.fixedDeltaTime * thrust;
 
+            UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 0.5f, 0.1f);
 
+            UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 0.5f, 0.1f);
+            LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 0.5f, 0.1f);
 
-        /////////////////////////// FORWARD MOVEMENT ///////////////////////
-        transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
+            //Pitch Value engine off//
+            Pitch += UpDownTurn * Time.fixedDeltaTime;
+            Pitch = Mathf.Clamp(Pitch, -0.2f, 0.2f);
 
+            //Yaw engine off//
+            Yaw += LeftRightTurn * Time.fixedDeltaTime;
 
-        UpDown = KeyValue(UP, DOWN, UpDown, yUpDown, 1.5f, 0.1f);
-
-        UpDownTurn = KeyValue(UP, DOWN, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
-        LeftRightTurn = KeyValue(LEFT, RIGHT, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
-
-        //Pitch//
-        Pitch += UpDownTurn * Time.fixedDeltaTime;
-        Pitch = Mathf.Clamp(Pitch, -1.2f, 1.2f);
-
-        //Yaw//
-        Yaw += LeftRightTurn * Time.fixedDeltaTime;
-
-        //Rotation//
-        transform.rotation =
-            Quaternion.Slerp(transform.rotation,
-                      Quaternion.EulerRotation(Pitch, Yaw, 0.0f), Time.fixedDeltaTime * 1.5f);
-    }
-		
-        //////////////////////////////////ENGINE OFF/////////////////////////////
-		else
-		{
-			if(thrust > minThrustValue)
-				thrust -= 0.001f;
-			else
-				thrust = minThrustValue;
-
-			transform.position += transform.forward * Time.fixedDeltaTime * thrust;
-
-			UpDown = KeyValue(UP,DOWN , UpDown, yUpDown, 0.5f, 0.1f);
-			
-			UpDownTurn = KeyValue(UP, DOWN, UpDownTurn, yUpDownTrun, 0.5f, 0.1f);
-			LeftRightTurn = KeyValue(LEFT, RIGHT, LeftRightTurn, yLeftRightTurn, 0.5f, 0.1f);
-			
-			//Pitch Value engine off//
-			Pitch += UpDownTurn * Time.fixedDeltaTime;
-			Pitch = Mathf.Clamp(Pitch, -0.2f, 0.2f);
-			
-			//Yaw engine off//
-			Yaw += LeftRightTurn * Time.fixedDeltaTime;
-			
             //rotation engine off//
-			transform.rotation = 
-				Quaternion.Slerp(transform.rotation, 
-				                 Quaternion.EulerRotation(Pitch, Yaw, 0), Time.fixedDeltaTime * 0.5f);
-		}
-
-	}
-
-    //////////////////////////// STRAFE MOVEMENT /////////////////////////
-	void StrafeMove ()
-	{
-		if (Input.GetKey (UP))    //move up//
-			transform.Translate (Vector3.up * 10f * Time.deltaTime);
-
-		if (Input.GetKey (DOWN))  //move down//
-			transform.Translate (Vector3.down * 10f * Time.deltaTime);
-
-		if (Input.GetKey (LEFT))  //move left//
-			transform.Translate (Vector3.left * 10f * Time.deltaTime);
-
-		if (Input.GetKey (RIGHT)) //move right//
-			transform.Translate (Vector3.right * 10f * Time.deltaTime);
-	}
-	
-	void Update ()
-	{
-        //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
-        if (Input.GetKeyDown(ENGINE_ON) && subRes.getShipEnergy() > 0)
-            isEngineOn = !isEngineOn;
-
-        //SHIP ENERGY//
-        if (subRes.getShipEnergy() <= 0)
-        {
-            isEngineOn = false;
-            if (thrust > 0)
-                thrust -= 0.5f;
-            else if (thrust < 0)
-                thrust += 0.5f;
-            else if (thrust <= 1.0f || thrust >= -1.0f)
-                thrust = 0;
-
+            transform.rotation =
+                Quaternion.Slerp(transform.rotation,
+                                 Quaternion.EulerRotation(Pitch, Yaw, 0), Time.fixedDeltaTime * 0.5f);
         }
         
     }

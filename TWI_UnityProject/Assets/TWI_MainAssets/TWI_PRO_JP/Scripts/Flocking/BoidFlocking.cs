@@ -51,11 +51,11 @@ public class BoidFlocking : MonoBehaviour {
 
     void OnCollisionEnter(Collision col) {
 		if (col.gameObject.tag == "Player Weapon") {
-			Destroy ();
+			DestroyMe ();
 		}
     }
 
-	public void Destroy() {
+	public void DestroyMe() {
 		controller.RemoveBoid(this);
 		GameObject.Destroy(this.gameObject);
 	}
