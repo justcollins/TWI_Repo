@@ -17,6 +17,7 @@ public class SuperRadar4 : MonoBehaviour {
 	public GameObject StraightSp;
 	public GameObject RightSp;
 	public GameObject FarRightSp;
+    private KeyboardManager keyboard;
 
 	Image image;
 	Image above;
@@ -52,9 +53,9 @@ public class SuperRadar4 : MonoBehaviour {
 
 	void Start ()
 	{
-		
 
 
+        keyboard = FindObjectOfType<KeyboardManager>();
 		RectTransform CanvasTransform = canvas.GetComponent<RectTransform> ();
 
 		float radarWidth = CanvasTransform.rect.width;
@@ -117,16 +118,16 @@ public class SuperRadar4 : MonoBehaviour {
 
 			radarRotation.transform.Rotate(0,0, (-1)*RotationSpeed * Time.deltaTime);
 
-			if (Input.GetMouseButtonDown(1) && ShortRadarFired == false && ShortRadarActive==true)
+            if (Input.GetKeyDown(keyboard.LeftMouse) && ShortRadarFired == false && ShortRadarActive == true)
 			{
 				StartCoroutine (ShortRangeRoutine ());
 			}
-			else if (Input.GetMouseButtonDown(1) && LongRadarFired == false && LongRadarActive==true)
+            else if (Input.GetKeyDown(keyboard.LeftMouse) && LongRadarFired == false && LongRadarActive == true)
 			{
 				StartCoroutine (Recharge ());			
 			}
 
-			if (Input.GetKeyDown("e") && ShortRadarActive == true)
+            if (Input.GetKeyDown(keyboard.Scanner) && ShortRadarActive == true)
 			{
 				LongRadarActive= true;
 				ShortRadarActive= false;
@@ -134,7 +135,7 @@ public class SuperRadar4 : MonoBehaviour {
 				transform.SetSiblingIndex (0);
 
 			}
-			else if (Input.GetKeyDown("e") && LongRadarActive == true)
+			else if (Input.GetKeyDown(keyboard.Scanner) && LongRadarActive == true)
 			{
 				ShortRadarActive= true;
 				LongRadarActive= false;
