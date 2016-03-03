@@ -19,12 +19,18 @@ public class BoidController : MonoBehaviour {
 	public BoidFlocking prefab;
 	public Transform chasee;
 
+	[Header("Turning Delay")]
+	public float lowerboundWait = 0.3f;
+	public float upperboundWait = 0.5f;
+
 	[Header("Additional Options")]
 	public BoidFlockCenter centerCollider;
 	public bool followCenter;
 	public bool drawCenter;
 	public float centerRadius = 3f;
+	private float initialRadius;
 	public bool centralAgency = false;
+	public bool stickToPlayer;
 
 	//[Header("Flock Vectors")]
 	internal Vector3 flockCenter;
@@ -36,6 +42,7 @@ public class BoidController : MonoBehaviour {
 
 	void Awake() {
 		col = GetComponent<Collider> ();
+		initialRadius = centerRadius;
 
 		if (centerCollider) {
 			centerCollider.controller = this;
@@ -80,6 +87,10 @@ public class BoidController : MonoBehaviour {
 				centerCollider.transform.position = flockCenter2;
 			}
 		}
+
+		if (flockSize <= 1) {
+			GameObject.Destroy(this.gameObject);
+		}
 	}
 
 	void OnDrawGizmos() {
@@ -89,6 +100,21 @@ public class BoidController : MonoBehaviour {
 		}
 	}
 
+	public void RemoveBoid( BoidFlocking _b ) {
+		boids.Remove (_b);
+		GameObject.Destroy (_b.gameObject);
+		flockSize = boids.Count;
+	}
+
+	public void AdjustRadius(float _c) {
+		centerRadius = _c;
+		centerCollider.GetComponent<SphereCollider>().radius = centerRadius;
+	}
+
+	public void ResetRadius() {
+		centerRadius = initialRadius;
+		centerCollider.GetComponent<SphereCollider>().radius = centerRadius;
+	}
 }
 
 /// <comment>
