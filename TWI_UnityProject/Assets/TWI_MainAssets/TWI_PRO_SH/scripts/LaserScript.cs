@@ -6,17 +6,23 @@ using System.Collections;
  Sarah Ho
  script for firing the laser weapons. It will show a laser texture image, collide/hit other objects, and light up
  */
+
+
 public class LaserScript : MonoBehaviour 
 {
 	LineRenderer line;
 	Light light;
     CursorLockMode lockCursor;
+    private KeyboardManager keyboard;
+    private EngineMonitor EM;
 
 	public bool useLight = false;
 	[Range(0f, 10f)] public float damageDone;
 
 	void Start () 
 	{
+        EM = GameObject.FindObjectOfType<EngineMonitor>();
+        keyboard = FindObjectOfType<KeyboardManager>();
 		line = gameObject.GetComponent<LineRenderer>();
 		line.enabled = false; //the pink square is gone at end of line
 
@@ -31,7 +37,7 @@ public class LaserScript : MonoBehaviour
 
 	void Update () 
 	{
-		if(Input.GetButtonDown("Fire1")) //GetButtonDown means when the button is clicked once
+		if(EM.getLaserState() == 1 && Input.GetKeyDown(keyboard.LeftMouse)) //GetButtonDown means when the button is clicked once
 		{
 			StopCoroutine("FireLaser"); //this is a fail-safe (but coroutine should auto stop)
 			StartCoroutine("FireLaser");
@@ -43,7 +49,7 @@ public class LaserScript : MonoBehaviour
 		line.enabled = true; //make the line visible
 		if (useLight) {light.enabled = true; }
 
-		while(Input.GetButton ("Fire1")) //GetButton down means while the button is pushed
+		while(Input.GetButton ("Fire")) //GetButton down means while the button is pushed
 		{
 
             Ray ray = new Ray(transform.position, transform.forward); //.position gets the position of the gun, .forward means wherever the x-axis is facing
