@@ -146,7 +146,7 @@ public class SuperRadar4 : MonoBehaviour {
 
 
 
-			if (dist <= (_radarWidth - 3) * 0.5 / radarZoom && radarBlip1Active==true && ShortRadarActive == true)
+			if (dist <= (_radarWidth - 4) * 0.5 / radarZoom && radarBlip1Active==true && ShortRadarActive == true)
 				{
 					if( bX < radarRange && bX > (radarRange * (-1)) && bZ < radarRange && bZ > (radarRange * (-1)))
 
@@ -163,11 +163,15 @@ public class SuperRadar4 : MonoBehaviour {
 						{
 							abv.a = 255f;
 							above.color = abv;
+                            blw.a = 0f;
+                            below.color = blw;
 						}
 						else if(bY<0)
 						{
 							blw.a = 255f;
 							below.color = blw;
+                            abv.a = 0f;
+                            above.color = abv;
 						}
 					}
 
@@ -192,7 +196,7 @@ public class SuperRadar4 : MonoBehaviour {
 				float dZ = centerPos.z - virusPos.z;
 
 				float deltay = Mathf.Atan2(dX, dZ) * Mathf.Rad2Deg - 270 - _centerObject.transform.eulerAngles.y;
-
+                //Debug.Log(deltay); - Figure out proper values and make sure they work in each scene
 				if (LongRadarFired)
 				{
 
@@ -222,7 +226,7 @@ public class SuperRadar4 : MonoBehaviour {
 						
 						StartCoroutine (LongRangeRoutine(straight, dist));		
 					}
-					else if(deltay < -100 && deltay> -110){
+					else if(deltay < -445 && deltay> -460){
 						str.a=0f;
 						flt.a=0f;
 						rgt.a=0f;
@@ -234,7 +238,7 @@ public class SuperRadar4 : MonoBehaviour {
 						
 						StartCoroutine (LongRangeRoutine(left, dist));		
 					}
-					else if(deltay < -110 && deltay> -120){
+					else if(deltay < -460 && deltay> -480){
 
 						lft.a=0f;
 						str.a=0f;
