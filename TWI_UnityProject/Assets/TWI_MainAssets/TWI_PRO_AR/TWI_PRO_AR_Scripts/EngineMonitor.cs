@@ -22,6 +22,8 @@ public class EngineMonitor : MonoBehaviour {
     public Material baseMat;
     public Submarine_Resources sub;
     public SubControl subCon;
+    private KeyboardManager keyboard;
+    
 
     private int scannerState = 0;
     private int laserState = 0;
@@ -35,6 +37,7 @@ public class EngineMonitor : MonoBehaviour {
         baseRend.GetComponent<Renderer>();
         baseRend.enabled = true;
         baseRend.material = baseMat;
+        keyboard = FindObjectOfType<KeyboardManager>();
 	}
 	
 	// Update is called once per frame
@@ -49,8 +52,11 @@ public class EngineMonitor : MonoBehaviour {
                 battery[i].SetActive(false);
         }
 //------------------------Q----------------------------------
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(keyboard.Scanner))
         {
+            setLaserState(0);
+            SC_Laser.SetActive(false);
+            EF_Field.SetActive(false);
             if (scannerState == 0)
             {
                 LR_Scan.SetActive(true);
@@ -66,12 +72,16 @@ public class EngineMonitor : MonoBehaviour {
             {
                 SR_Scan.SetActive(false);
                 setScanState(0);
-            } 
+            }
         }
+        
+        
 //------------------------E-----------------------------------
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(keyboard.LaserShield))
         {
-            Debug.Log("E");
+            setScanState(0);
+            LR_Scan.SetActive(false);
+            SR_Scan.SetActive(false);
             if (laserState == 0)
             {
                 SC_Laser.SetActive(true);
@@ -90,7 +100,7 @@ public class EngineMonitor : MonoBehaviour {
             }
         }
 //-----------------------X------------------------------------
-        if(Input.GetKeyDown(KeyCode.X))
+        if(Input.GetKeyDown(keyboard.SpotOn))
         {
             if (spotState == 0)
             {
@@ -104,7 +114,7 @@ public class EngineMonitor : MonoBehaviour {
             }
         }
 //-----------------------C------------------------------------
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(keyboard.InstOn))
         {
             if (instState == 0)
             {
@@ -118,7 +128,7 @@ public class EngineMonitor : MonoBehaviour {
             }
         }
 //-----------------------ENG ON------------------------------------
-        if (Input.GetKeyDown(subCon.ENGINE_ON))
+        if (Input.GetKeyDown(keyboard.EngineOn))
         {
             if (engState == 0)
             {
@@ -131,7 +141,7 @@ public class EngineMonitor : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(keyboard.MiddleMouse))
         {
             if (FwdRevState == 1)
                 setFwdRev(-1);
@@ -220,5 +230,9 @@ public class EngineMonitor : MonoBehaviour {
     public void setFwdRev(int frState)
     {
         FwdRevState = frState;
+    }
+    public int getLaserState()
+    {
+        return laserState;
     }
 }
