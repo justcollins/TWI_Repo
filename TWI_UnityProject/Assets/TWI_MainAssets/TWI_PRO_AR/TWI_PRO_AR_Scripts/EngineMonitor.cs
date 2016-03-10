@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-
+//EDITED LOCALLY
 public class EngineMonitor : MonoBehaviour {
 
     public GameObject[] battery;
@@ -26,10 +26,10 @@ public class EngineMonitor : MonoBehaviour {
     
 
     private int scannerState = 0;
-    private int laserState = 0;
-    private int spotState = 0;
-    private int instState = 0;
-    private int engState = 0;
+    private int laserState = 2;
+    private int spotState = 2;
+    private int instState = 2;
+    private int engState = 2;
     private int FwdRevState = 1;
     
 	// Use this for initialization
@@ -54,7 +54,9 @@ public class EngineMonitor : MonoBehaviour {
 //------------------------E----------------------------------
         if (Input.GetKeyDown(keyboard.LaserShield))
         {
-            if (laserState == 0)
+            LR_Scan.SetActive(false);
+            SR_Scan.SetActive(false);
+            if (laserState != 1)
             {
                 SC_Laser.SetActive(true);
                 EF_Field.SetActive(false);
@@ -73,6 +75,9 @@ public class EngineMonitor : MonoBehaviour {
 //------------------------Q-----------------------------------
         if (Input.GetKeyDown(keyboard.Scanner))
         {
+            setLaserState(2);
+            SC_Laser.SetActive(false);
+            EF_Field.SetActive(false);
             if (scannerState == 0)
             {
                 LR_Scan.SetActive(true);
@@ -90,7 +95,7 @@ public class EngineMonitor : MonoBehaviour {
 //-----------------------X------------------------------------
         if(Input.GetKeyDown(keyboard.SpotOn))
         {
-            if (spotState == 0)
+            if (spotState != 1)
             {
                 Spot_Lite.SetActive(true);
                 setSpotState(1);
@@ -104,7 +109,7 @@ public class EngineMonitor : MonoBehaviour {
 //-----------------------C------------------------------------
         if (Input.GetKeyDown(keyboard.InstOn))
         {
-            if (instState == 0)
+            if (instState != 1)
             {
                 Inst_Lite.SetActive(true);
                 setInstState(1);
@@ -118,7 +123,7 @@ public class EngineMonitor : MonoBehaviour {
 //-----------------------ENG ON------------------------------------
         if (Input.GetKeyDown(keyboard.EngineOn))
         {
-            if (engState == 0)
+            if (engState != 1)
             {
                 Eng_Lite.SetActive(true);
                 setEngState(1);
