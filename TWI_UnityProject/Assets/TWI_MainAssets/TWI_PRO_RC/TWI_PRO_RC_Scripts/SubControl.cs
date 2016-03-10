@@ -5,13 +5,9 @@ using System.Collections;
 
 public class SubControl : MonoBehaviour {
 
-	public KeyCode UP;
-	public KeyCode DOWN;
-	public KeyCode LEFT;
-	public KeyCode RIGHT;
-
-	public KeyCode ENGINE_ON;//For Turn on and off the engine
+    //For Turn on and off the engine
     public Submarine_Resources subRes;
+    private KeyboardManager keyboard;
 	
 	float UpDownVelocity 			= 0.0f; 
 	public float maxThrustValue 	= 10.0f;		//Max value to reach for thruster
@@ -44,6 +40,11 @@ public class SubControl : MonoBehaviour {
     private int pressure;
 
 
+    void Start()
+    {
+        keyboard = FindObjectOfType<KeyboardManager>();
+    }
+
     void FixedUpdate()
     {
         
@@ -64,24 +65,24 @@ public class SubControl : MonoBehaviour {
     //////////////////////////// STRAFE MOVEMENT /////////////////////////
 	void StrafeMove ()
 	{
-		if (Input.GetKey (UP))    //move up//
+		if (Input.GetKey (keyboard.Up))    //move up//
 			transform.Translate (Vector3.up * 10f * Time.deltaTime);
 
-		if (Input.GetKey (DOWN))  //move down//
+		if (Input.GetKey (keyboard.Down))  //move down//
 			transform.Translate (Vector3.down * 10f * Time.deltaTime);
 
-		if (Input.GetKey (LEFT))  //move left//
+		if (Input.GetKey (keyboard.Left))  //move left//
 			transform.Translate (Vector3.left * 10f * Time.deltaTime);
 
-		if (Input.GetKey (RIGHT)) //move right//
+		if (Input.GetKey (keyboard.Right)) //move right//
 			transform.Translate (Vector3.right * 10f * Time.deltaTime);
 	}
 	
 	void Update ()
 	{
-        Debug.Log(thrust);
+        //Debug.Log(thrust);
         //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
-        if (Input.GetKeyDown(ENGINE_ON) && subRes.getShipEnergy() > 0)
+        if (Input.GetKeyDown(keyboard.EngineOn) && subRes.getShipEnergy() > 0)
             isEngineOn = !isEngineOn;
 
         //SHIP ENERGY//
@@ -97,12 +98,12 @@ public class SubControl : MonoBehaviour {
 
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(keyboard.Boost))
         {
             thrust = thrust + boost;
         }
 
-        else if (Input.GetKeyUp(KeyCode.LeftControl))
+        else if (Input.GetKeyUp(keyboard.Boost))
         {
             thrust = thrust - boost;
         }
@@ -110,7 +111,7 @@ public class SubControl : MonoBehaviour {
         if (isEngineOn)
         {
 
-            if (Input.GetMouseButtonDown(2)) // middle mouse button click
+            if (Input.GetKeyDown(keyboard.MiddleMouse)) // middle mouse button click
             {
                 ForBack = !ForBack;
 
@@ -133,7 +134,7 @@ public class SubControl : MonoBehaviour {
 
             //////////////////////// STRAFE /////////////////////
 
-            if (Input.GetMouseButton(1)) //if i press right mouse button 
+            if (Input.GetKey(keyboard.RightMouse)) //if i press right mouse button 
             {
                 StrafeMove(); // do strafe movements (bellow)
             }
@@ -208,10 +209,10 @@ public class SubControl : MonoBehaviour {
             transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
 
 
-            UpDown = KeyValue(UP, DOWN, UpDown, yUpDown, 1.5f, 0.1f);
+            UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f);
 
-            UpDownTurn = KeyValue(UP, DOWN, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
-            LeftRightTurn = KeyValue(LEFT, RIGHT, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
+            UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
+            LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
 
             //Pitch//
             Pitch += UpDownTurn * Time.fixedDeltaTime;
@@ -236,10 +237,10 @@ public class SubControl : MonoBehaviour {
 
             transform.position += transform.forward * Time.fixedDeltaTime * thrust;
 
-            UpDown = KeyValue(UP, DOWN, UpDown, yUpDown, 0.5f, 0.1f);
+            UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 0.5f, 0.1f);
 
-            UpDownTurn = KeyValue(UP, DOWN, UpDownTurn, yUpDownTrun, 0.5f, 0.1f);
-            LeftRightTurn = KeyValue(LEFT, RIGHT, LeftRightTurn, yLeftRightTurn, 0.5f, 0.1f);
+            UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 0.5f, 0.1f);
+            LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 0.5f, 0.1f);
 
             //Pitch Value engine off//
             Pitch += UpDownTurn * Time.fixedDeltaTime;
