@@ -51,53 +51,41 @@ public class EngineMonitor : MonoBehaviour {
             else
                 battery[i].SetActive(false);
         }
-//------------------------Q----------------------------------
-        if (Input.GetKeyDown(keyboard.Scanner))
-        {
-            setLaserState(0);
-            SC_Laser.SetActive(false);
-            EF_Field.SetActive(false);
-            if (scannerState == 0)
-            {
-                LR_Scan.SetActive(true);
-                setScanState(1);
-            }
-            else if (scannerState == 1)
-            {
-                LR_Scan.SetActive(false);
-                SR_Scan.SetActive(true);
-                setScanState(2);
-            }
-            else
-            {
-                SR_Scan.SetActive(false);
-                setScanState(0);
-            }
-        }
-        
-        
-//------------------------E-----------------------------------
+//------------------------E----------------------------------
         if (Input.GetKeyDown(keyboard.LaserShield))
         {
-            setScanState(0);
-            LR_Scan.SetActive(false);
-            SR_Scan.SetActive(false);
             if (laserState == 0)
             {
                 SC_Laser.SetActive(true);
+                EF_Field.SetActive(false);
                 setLaserState(1);
-            }
-            else if (laserState == 1)
-            {
-                SC_Laser.SetActive(false);
-                EF_Field.SetActive(true);
-                setLaserState(2);
             }
             else
             {
-                EF_Field.SetActive(false);
+                SC_Laser.SetActive(false);
+                EF_Field.SetActive(true);
                 setLaserState(0);
             }
+            
+        }
+        
+        
+//------------------------Q-----------------------------------
+        if (Input.GetKeyDown(keyboard.Scanner))
+        {
+            if (scannerState == 0)
+            {
+                LR_Scan.SetActive(true);
+                SR_Scan.SetActive(false);
+                setScanState(1);
+            }
+            else
+            {
+                LR_Scan.SetActive(false);
+                SR_Scan.SetActive(true);
+                setScanState(0);
+            }
+            
         }
 //-----------------------X------------------------------------
         if(Input.GetKeyDown(keyboard.SpotOn))
