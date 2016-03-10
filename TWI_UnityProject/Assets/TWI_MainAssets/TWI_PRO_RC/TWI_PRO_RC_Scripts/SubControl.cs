@@ -80,7 +80,7 @@ public class SubControl : MonoBehaviour {
 	
 	void Update ()
 	{
-        Debug.Log(thrust);
+        //Debug.Log(thrust);
         //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
         if (Input.GetKeyDown(keyboard.EngineOn) && subRes.getShipEnergy() > 0)
             isEngineOn = !isEngineOn;

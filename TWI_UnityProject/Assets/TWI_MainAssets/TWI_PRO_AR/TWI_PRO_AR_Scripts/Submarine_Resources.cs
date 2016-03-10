@@ -39,7 +39,7 @@ public class Submarine_Resources : MonoBehaviour {
             //setEnergyLevel(0.2f);
             setCabinPressure(subCon.getPressure());
             //setSpeed(5);
-            Debug.Log(getCabinPressure());
+           // Debug.Log(getCabinPressure());
             curTime = 0;
             
         }

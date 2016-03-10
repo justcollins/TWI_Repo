@@ -37,7 +37,7 @@ public class ShieldScript : MonoBehaviour
         {
                 shieldShader.enabled = false;
                 shieldCol.enabled = false;
-                Debug.Log("Shield OFF");
+               // Debug.Log("Shield OFF");
         }
         
     }
