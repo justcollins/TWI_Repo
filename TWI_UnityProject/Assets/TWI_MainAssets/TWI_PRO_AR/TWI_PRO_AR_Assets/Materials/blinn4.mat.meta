@@ -1,5 +1,10 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+guid: e3ff2fc8ed67e3849a096917bce871d4
+timeCreated: 1457586605
+licenseType: Pro
+=======
+<<<<<<< HEAD
 guid: a093b1ae59a59cf4185c9a244703986f
 timeCreated: 1456377123
 licenseType: Pro
@@ -12,6 +17,7 @@ licenseType: Pro
 guid: b220bdd9a9135da4c8e544a51d7b0074
 timeCreated: 1456657988
 licenseType: Free
+>>>>>>> refs/remotes/origin/master
 >>>>>>> refs/remotes/origin/master
 >>>>>>> refs/remotes/origin/master
 NativeFormatImporter:
