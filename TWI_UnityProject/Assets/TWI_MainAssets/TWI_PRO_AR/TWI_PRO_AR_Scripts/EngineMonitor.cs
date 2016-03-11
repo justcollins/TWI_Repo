@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-
+//EDITED LOCALLY
 public class EngineMonitor : MonoBehaviour {
 
     public GameObject[] battery;
@@ -26,10 +26,10 @@ public class EngineMonitor : MonoBehaviour {
     
 
     private int scannerState = 0;
-    private int laserState = 0;
-    private int spotState = 0;
-    private int instState = 0;
-    private int engState = 0;
+    private int laserState = 2;
+    private int spotState = 2;
+    private int instState = 2;
+    private int engState = 2;
     private int FwdRevState = 1;
     
 	// Use this for initialization
@@ -51,58 +51,51 @@ public class EngineMonitor : MonoBehaviour {
             else
                 battery[i].SetActive(false);
         }
-//------------------------Q----------------------------------
+//------------------------E----------------------------------
+        if (Input.GetKeyDown(keyboard.LaserShield))
+        {
+            LR_Scan.SetActive(false);
+            SR_Scan.SetActive(false);
+            if (laserState != 1)
+            {
+                SC_Laser.SetActive(true);
+                EF_Field.SetActive(false);
+                setLaserState(1);
+            }
+            else
+            {
+                SC_Laser.SetActive(false);
+                EF_Field.SetActive(true);
+                setLaserState(0);
+            }
+            
+        }
+        
+        
+//------------------------Q-----------------------------------
         if (Input.GetKeyDown(keyboard.Scanner))
         {
-            setLaserState(0);
+            setLaserState(2);
             SC_Laser.SetActive(false);
             EF_Field.SetActive(false);
             if (scannerState == 0)
             {
                 LR_Scan.SetActive(true);
+                SR_Scan.SetActive(false);
                 setScanState(1);
             }
-            else if (scannerState == 1)
+            else
             {
                 LR_Scan.SetActive(false);
                 SR_Scan.SetActive(true);
-                setScanState(2);
-            }
-            else
-            {
-                SR_Scan.SetActive(false);
                 setScanState(0);
             }
-        }
-        
-        
-//------------------------E-----------------------------------
-        if (Input.GetKeyDown(keyboard.LaserShield))
-        {
-            setScanState(0);
-            LR_Scan.SetActive(false);
-            SR_Scan.SetActive(false);
-            if (laserState == 0)
-            {
-                SC_Laser.SetActive(true);
-                setLaserState(1);
-            }
-            else if (laserState == 1)
-            {
-                SC_Laser.SetActive(false);
-                EF_Field.SetActive(true);
-                setLaserState(2);
-            }
-            else
-            {
-                EF_Field.SetActive(false);
-                setLaserState(0);
-            }
+            
         }
 //-----------------------X------------------------------------
         if(Input.GetKeyDown(keyboard.SpotOn))
         {
-            if (spotState == 0)
+            if (spotState != 1)
             {
                 Spot_Lite.SetActive(true);
                 setSpotState(1);
@@ -116,7 +109,7 @@ public class EngineMonitor : MonoBehaviour {
 //-----------------------C------------------------------------
         if (Input.GetKeyDown(keyboard.InstOn))
         {
-            if (instState == 0)
+            if (instState != 1)
             {
                 Inst_Lite.SetActive(true);
                 setInstState(1);
@@ -130,7 +123,7 @@ public class EngineMonitor : MonoBehaviour {
 //-----------------------ENG ON------------------------------------
         if (Input.GetKeyDown(keyboard.EngineOn))
         {
-            if (engState == 0)
+            if (engState != 1)
             {
                 Eng_Lite.SetActive(true);
                 setEngState(1);
