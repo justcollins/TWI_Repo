@@ -7,6 +7,8 @@ public class SubControl : MonoBehaviour {
 
     //For Turn on and off the engine
     public Submarine_Resources subRes;
+    public GameObject exteriorLights;
+    public GameObject interiorLights;
     private KeyboardManager keyboard;
 	
 	float UpDownVelocity 			= 0.0f; 
@@ -43,6 +45,8 @@ public class SubControl : MonoBehaviour {
     void Start()
     {
         keyboard = FindObjectOfType<KeyboardManager>();
+        exteriorLights.SetActive(false);
+        interiorLights.SetActive(false);
     }
 
     void FixedUpdate()
@@ -84,6 +88,17 @@ public class SubControl : MonoBehaviour {
         //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
         if (Input.GetKeyDown(keyboard.EngineOn) && subRes.getShipEnergy() > 0)
             isEngineOn = !isEngineOn;
+
+        ////////////////////////ACTIVATION OF LIGHTS INSIDE AND OUTSIDE////////////////////////
+        if (subRes.getShipEnergy() > 0) {
+            if(Input.GetKeyDown(keyboard.ExteriorLights)) {
+                exteriorLights.SetActive(!exteriorLights.activeSelf);
+            }
+
+            if(Input.GetKeyDown(keyboard.InteriorLights)) {
+                interiorLights.SetActive(!interiorLights.activeSelf);
+            }
+        }
 
         //SHIP ENERGY//
         if (subRes.getShipEnergy() <= 0)
