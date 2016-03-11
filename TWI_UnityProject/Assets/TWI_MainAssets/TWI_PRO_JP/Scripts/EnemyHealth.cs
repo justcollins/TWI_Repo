@@ -27,8 +27,27 @@ public class EnemyHealth : MonoBehaviour {
 
 	void Update() {
 		if (health <= 0) {
+			Death ();
+		}
+	}
+	
+	void Death() {
+		switch((int)type) {
+		case 0:
+			break;
+			
+		case 1: //tagger
+			Debug.Log ( this.gameObject.name + " died from low health!" );
+			BoidFlocking bf = GetComponent<BoidFlocking>();
+			bf.DestroyMe();
+			break;
+			
+		case 2: //macrophage
+		case 3: //paired
+		case 4: //arbiter parasite
 			Debug.Log ( this.gameObject.name + " died from low health!" );
 			GameObject.Destroy(this.gameObject);
+			break;
 		}
 	}
 }
