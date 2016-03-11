@@ -15,21 +15,46 @@ using System.Collections;
  *   be the enemies and the player.
  */
 
-public class ShipVisibility : MonoBehaviour {
+public enum Hub {
+	NoHub,
+	FirstHub,
+	SecondHub,
+	ThirdHub,
+	FourthHub,
+}
 
+public class ShipVisibility : MonoBehaviour {
+	
 	[Range(0,100f)] private static float myVisibility = 0f;
+	[Range(0,100f)] private static float myTagPercent = 0f;
 	private static bool amTagged = false;
 	private static GameObject myShip;
-
+	private static Hub shipHub = Hub.FirstHub;
+	
 	public static void SetVisibility(float n) { myVisibility = n; }
+	public static void AddVisibility(float n) { myVisibility += n; }
 	public static float GetVisibility() { return myVisibility; }
-
-	public static void SetTag(bool b) { amTagged = b; }
-	public static bool GetTag() { return amTagged; }
-
+	
+	public static void SetTagPercent(float n) { myTagPercent = n; }
+	public static void AddTagPercent(float n) { myTagPercent += n; }
+	public static float GetTagPercent() { return myTagPercent; }
+	
+	public static void SetTagged(bool b) { amTagged = b; }
+	public static bool GetTagged() { return amTagged; }
+	
 	public static void SetShip(GameObject g) { myShip = g; }
 	public static GameObject GetShip() { return myShip; }
 	public static Vector3 GetShipPos() { return myShip.transform.position; }
+	public static void SetShipHub(Hub h) { shipHub = h; }
+	public static Hub GetShipHub() { return shipHub; }
+	
+	
+	void Awake() {
+		myVisibility = 0f;
+		myTagPercent = 0f;
+		amTagged = false;
+		myShip = GameObject.FindGameObjectWithTag ( "Player" );
+	}
 }
 
 /// <comment>

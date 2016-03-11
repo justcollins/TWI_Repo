@@ -1,91 +1,87 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof (NavMeshAgent))]
-
 /**
  *   Enemy Movement Class
- *   27 Jan 2016
+ *   10 Feb 2016
  *   Jose Pascua
  * 
- *   Basic movement
+ *   Steering towards targets
  */
 
+public enum EnemyType {
+	None = 0,
+	Tagger = 1,
+	Macrophage = 2,
+	Paired = 3,
+	ArbiterParasite = 4,
+	ArbiterMinion = 5
+}
+
 public class EnemyMovement : MonoBehaviour {
-
-	public enum CurrentBehavior {
-		Patroling = 0,
-		Seeking = 1
-	};
-
+	
 	[Header("Basic Options")]
-	public float movementSpeed;
-
-	[Header("Targets and Points")]
-	public Transform[] patrolPoints;
-	public bool startAtFirstPoint = false;
-	public string playerTag = "Player";
-
-	[Header("Behavior")]
-	public CurrentBehavior currentBehavior;
-	public EnemyVerticalMovement verticalMovement;
-
-	private Transform target;
-	private NavMeshAgent nma;
-	private int currPoint;
-
+	public float minVelocity = 0.5f;
+	public float maxVelocity = 20f;
+	public float randomness = 1.0f;
+	public Transform chasee;
+	public float rotateSpeed = 20f;
+	
+	private Rigidbody rb;
+	
 	void Awake() {
-		nma = GetComponent<NavMeshAgent>();
-	} // end of Awake()
-
-	void Start() {
-		if (startAtFirstPoint) { transform.position = patrolPoints[0].position; }
-		currPoint = 0;
-		target = (GameObject.FindGameObjectWithTag(playerTag)).transform;
-		nma.speed = movementSpeed;
-	} // end of Start()
-
+		rb = GetComponent<Rigidbody> ();
+	}
+	
 	void Update() {
-		switch ( (int)currentBehavior ) {
-		case 0:
-			Patrol ();
-			break;
-		case 1:
-			Seek ();
-			break;
-		}
-
-		if (verticalMovement != null) {
-			if (verticalMovement.GetAdjustStop()) {
-				nma.Stop();
-			} else {
-				nma.Resume ();
-			}
+		Movement ();
+		LookAtTarget ();
+	}
+	
+	void Movement() {
+		
+		//moves towards target
+		rb.velocity += CalculateSteering() * Time.deltaTime;
+		
+		// enforce min and max velocity
+		float speed = rb.velocity.magnitude;
+		if (speed > maxVelocity) {
+			rb.velocity = rb.velocity.normalized*maxVelocity;
+		} else if (speed < minVelocity) {
+			rb.velocity = rb.velocity.normalized*minVelocity;
 		}
 	}
-
-	void Patrol() {
-		nma.speed = movementSpeed;
-		if (transform.position.x!=patrolPoints[currPoint].position.x) {
-			nma.SetDestination(patrolPoints[currPoint].position);
-			if (verticalMovement != null) {
-				verticalMovement.SetTarget( patrolPoints[currPoint] ); 
-			}
+	
+	Vector3 CalculateSteering() {
+		Vector3 randomize = new Vector3 ((Random.value * 2) - 1, (Random.value * 2) - 1, (Random.value * 2) - 1);
+		randomize.Normalize ();
+		randomize *= randomness;
+		
+		return (( chasee.position - transform.position ) + (randomize));
+	}
+	
+	Vector3 AdjustVertically( float y ) {
+		Debug.Log ("Adjusting Vertically");
+		return new Vector3( 0, y, 0 ) ;
+	}
+	
+	Vector3 AdjustHorizontally( float x ) {
+		Debug.Log ("Adjusting Horizontally");
+		return new Vector3( x, 0, 0 ) ;
+	}
+	
+	void LookAtTarget() {
+		Vector3 dir;
+		dir = (chasee.position - transform.position).normalized;
+		
+		if (dir == Vector3.zero) {
 		} else {
-			currPoint = ((currPoint+1)%(patrolPoints.Length));
-		}
-	}
-
-	void Seek () {
-		nma.speed = movementSpeed;
-		nma.SetDestination(target.position);
-		if (verticalMovement != null) {
-			verticalMovement.SetTarget( target ); 
+			transform.rotation = Quaternion.Slerp (transform.rotation, (Quaternion.LookRotation (dir, Vector3.up)), Time.deltaTime * rotateSpeed);
 		}
 	}
 }
 
 /// <comment>
 /// by Jose Pascua
-/// Basic enemy movement
+/// Steering towards targets and maneuvering through 3D space.
 /// </comment>

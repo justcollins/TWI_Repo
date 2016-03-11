@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Creates a Point based movement for enemies in the world, currently outdated by Jose.
+/// </summary>
+
 public class Enemy : MonoBehaviour
 {
 
