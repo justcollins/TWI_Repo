@@ -14,10 +14,6 @@ public class TestEnvironmentScript : MonoBehaviour {
     private void Awake() {
         environmentManager = GameObject.FindObjectOfType<EnvironmentManager>();
     }
-
-    private void Start () {
-
-	}
 	
 	private void Update () {
         if(Input.GetKeyDown(KeyCode.A)) {
