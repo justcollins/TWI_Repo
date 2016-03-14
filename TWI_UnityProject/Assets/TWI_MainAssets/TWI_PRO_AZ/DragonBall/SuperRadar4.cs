@@ -132,7 +132,7 @@ public class SuperRadar4 : MonoBehaviour {
 				LongRadarActive= true;
 				ShortRadarActive= false;
 
-				transform.SetSiblingIndex (0);
+				transform.SetSiblingIndex (1);
 
 			}
 			else if (Input.GetKeyDown(keyboard.Scanner) && LongRadarActive == true)
@@ -140,7 +140,7 @@ public class SuperRadar4 : MonoBehaviour {
 				ShortRadarActive= true;
 				LongRadarActive= false;
 
-				transform.SetSiblingIndex (1);
+				transform.SetSiblingIndex (2);
 
 			}
 
