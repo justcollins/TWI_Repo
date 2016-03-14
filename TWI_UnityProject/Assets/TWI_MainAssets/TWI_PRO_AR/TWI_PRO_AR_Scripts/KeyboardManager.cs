@@ -16,5 +16,6 @@ public class KeyboardManager : MonoBehaviour {
     public KeyCode InstOn;
     public KeyCode SpotOn;
     public KeyCode Boost;
-	
+    public KeyCode ExteriorLights;
+    public KeyCode InteriorLights;
 }

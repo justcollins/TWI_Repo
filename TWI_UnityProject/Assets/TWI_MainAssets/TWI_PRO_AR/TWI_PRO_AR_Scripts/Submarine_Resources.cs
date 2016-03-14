@@ -34,7 +34,7 @@ public class Submarine_Resources : MonoBehaviour {
             setOxygenLevel(0.2f);
             if (subCon.getEngineOn())
             {
-                setEnergyLevel(0.5f);
+                //setEnergyLevel(0.5f);
             }
             //setEnergyLevel(0.2f);
             setCabinPressure(subCon.getPressure());
