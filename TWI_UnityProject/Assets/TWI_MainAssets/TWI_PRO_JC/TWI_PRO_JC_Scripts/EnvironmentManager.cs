@@ -32,7 +32,6 @@ public class EnvironmentManager : MonoBehaviour {
                 Debug.Log("previousGroup: " + previousGroup);
             }
         }
-
         changeCurGroup = true;
     }
 
@@ -42,6 +41,9 @@ public class EnvironmentManager : MonoBehaviour {
 
 	void Start () {
         SetActiveGroups(startingGroup, startingGroup);
+        if (!RenderSettings.fog) {
+            RenderSettings.fog = true;
+        }
     }
 	
 	void Update () {
@@ -59,6 +61,11 @@ public class EnvironmentManager : MonoBehaviour {
             }
         }
         changeCurGroup = false;
+    }
+
+    public void ChangeFog(float newFogDensity, Color newFogColor) {
+        RenderSettings.fogDensity = newFogDensity;
+        RenderSettings.fogColor = newFogColor;
     }
 
 }
