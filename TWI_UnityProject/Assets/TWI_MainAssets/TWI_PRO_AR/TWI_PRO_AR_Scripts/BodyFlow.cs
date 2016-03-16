@@ -26,15 +26,15 @@ public class BodyFlow : MonoBehaviour {
 
     void Update()
     {
-        OnTriggerStay(shipCol);
+        OnTriggerEnter(shipCol);
     }
 
-    void OnTriggerStay(Collider shipCol)
+    void OnTriggerEnter(Collider other)
     {
         myShip.setSectionInt(sectionNumber);
         myShip.setBloodForce(blood);
         myShip.setPressure(pressureChange);
-        Debug.Log(myShip.getSectionInt());
+        //Debug.Log(myShip.getSectionInt());
     }
 
    
