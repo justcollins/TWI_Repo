@@ -7,12 +7,13 @@ using System.Collections;
 ///</summary>
 public class EnvironmentManager : MonoBehaviour {
 
-    public GameObject startingGroup;
-    public GameObject[] environmentGroups;
+    public BodyFlow startingGroup;
+    public BodyFlow[] environmentGroups;
+    public SubControl ship;
 
-    private GameObject currentGroup;
-    private GameObject previousGroup;
-    private bool changeCurGroup;
+    private BodyFlow currentGroup;
+
+    private int curSection;
 
     ///<summary>
     ///This method controls setting what is the current group and what is the previous group.
@@ -20,19 +21,15 @@ public class EnvironmentManager : MonoBehaviour {
     ///environment. For this, if the previous group is ever the same as the current group, then you just put in the same environment mesh into 
     ///your public gameobjects and enter that in.
     ///</summary>
-    public void SetActiveGroups(GameObject newCurrentGroup, GameObject newPreviousGroup) {
+    public void SetActiveGroups(BodyFlow newCurrentGroup)
+    {
         for(int i = 0; i < environmentGroups.Length; i++) {
             if(newCurrentGroup.name == environmentGroups[i].name) {
                 currentGroup = newCurrentGroup;
                 Debug.Log("currentGroup: " + currentGroup);
             }
-
-            if(newPreviousGroup.name == environmentGroups[i].name) {
-                previousGroup = newPreviousGroup;
-                Debug.Log("previousGroup: " + previousGroup);
-            }
         }
-        changeCurGroup = true;
+        
     }
 
     public string GetCurrentGroup() {
@@ -40,27 +37,42 @@ public class EnvironmentManager : MonoBehaviour {
     }
 
 	void Start () {
-        SetActiveGroups(startingGroup, startingGroup);
+        curSection = startingGroup.sectionNumber;
+        ManageVisibleGroup();
         if (!RenderSettings.fog) {
             RenderSettings.fog = true;
         }
+        
     }
 	
 	void Update () {
-	    if(changeCurGroup) {
-            ManageVisibleGroup();
+	    if(ship.getSectionInt() != curSection) {
+            curSection = ship.getSectionInt();
         }
+        Debug.Log(curSection);
+        ManageVisibleGroup();
 	}
 
     private void ManageVisibleGroup() {
         for(int i = 0; i < environmentGroups.Length; i++) {
-            if(environmentGroups[i].name == currentGroup.name || environmentGroups[i].name == previousGroup.name) {
-                environmentGroups[i].SetActive(true);
-            } else {
-                environmentGroups[i].SetActive(false);
+            if (environmentGroups[i].sectionNumber == curSection)
+            {
+                currentGroup = environmentGroups[i];
+                environmentGroups[i].gameObject.SetActive(true);
+                for (int j = 0; j < currentGroup.adjacentSections.Length; j++)
+                {
+                    if (environmentGroups[i] == currentGroup.adjacentSections[j])
+                    {
+                        environmentGroups[i].gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        environmentGroups[i].gameObject.SetActive(false);
+                    }
+                }
             }
         }
-        changeCurGroup = false;
+        
     }
 
     public void ChangeFog(float newFogDensity, Color newFogColor) {
