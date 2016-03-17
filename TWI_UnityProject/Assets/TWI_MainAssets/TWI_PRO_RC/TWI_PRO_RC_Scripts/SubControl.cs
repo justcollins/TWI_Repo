@@ -57,6 +57,9 @@ public class SubControl : MonoBehaviour {
     private int pressure;
     private float wfX, wfY, wfZ;
 
+    private float curTime = 0.0f;
+    private float maxTime = 1.0f;
+
 
     void Start()
     {
@@ -138,6 +141,13 @@ public class SubControl : MonoBehaviour {
         if (Input.GetKeyDown(keyboard.Boost))
         {
             thrust = thrust + boost;
+            subRes.setEnergyLevel(-3.0f);
+            curTime += Time.deltaTime;
+            if (curTime >= maxTime)
+            {
+                subRes.setEnergyLevel(-3.0f);
+                curTime = 0;
+            }
         }
 
         else if (Input.GetKeyUp(keyboard.Boost))
