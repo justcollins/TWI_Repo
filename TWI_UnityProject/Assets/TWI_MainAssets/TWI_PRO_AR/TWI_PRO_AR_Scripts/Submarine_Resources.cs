@@ -31,15 +31,15 @@ public class Submarine_Resources : MonoBehaviour {
         curTime += Time.deltaTime;
         if (curTime >= oxyTimer)
         {
-            setOxygenLevel(0.2f);
+            setOxygenLevel(3.0f);
             if (subCon.getEngineOn())
             {
-                setEnergyLevel(0.5f);
+                //setEnergyLevel(0.5f);
             }
             //setEnergyLevel(0.2f);
             setCabinPressure(subCon.getPressure());
             //setSpeed(5);
-            Debug.Log(getCabinPressure());
+           // Debug.Log(getCabinPressure());
             curTime = 0;
             
         }

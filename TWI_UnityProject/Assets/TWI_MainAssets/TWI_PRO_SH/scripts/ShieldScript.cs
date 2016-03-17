@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//EDITED LOCALLY
 public class ShieldScript : MonoBehaviour
 {
     public GameObject shieldObj;
@@ -23,7 +24,7 @@ public class ShieldScript : MonoBehaviour
     void Update()
     {
         //turn shield's mesh & shader on/off on camera view when Spacebar is pressed
-        if (EM.getLaserState() == 2 && Input.GetKey(keyboard.LeftMouse))
+        if (EM.getLaserState() == 0 && Input.GetKey(keyboard.LeftMouse))
         {
             //shieldShader = shieldObj.GetComponent<MeshRenderer>();
             //shieldShader.enabled = !shieldShader.enabled;//it's now True
@@ -37,7 +38,7 @@ public class ShieldScript : MonoBehaviour
         {
                 shieldShader.enabled = false;
                 shieldCol.enabled = false;
-                Debug.Log("Shield OFF");
+               // Debug.Log("Shield OFF");
         }
         
     }
