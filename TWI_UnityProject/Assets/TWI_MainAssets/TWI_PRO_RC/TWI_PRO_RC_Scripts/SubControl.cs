@@ -41,6 +41,7 @@ public class SubControl : MonoBehaviour {
     private Vector3 worldForce;
     private int pressure;
 
+    private float wfX, wfY, wfZ;
 
     void Start()
     {
@@ -51,7 +52,8 @@ public class SubControl : MonoBehaviour {
 
     void FixedUpdate()
     {
-        
+
+        //worldForce = new Vector3(wfX, wfY, wfZ);
         if (sectionInt == 0)
             worldForce = new Vector3(0.0f, 0.0f, 1.0f);
         if (sectionInt == 1)
@@ -346,4 +348,12 @@ public class SubControl : MonoBehaviour {
     {
         return pressure;
     }
+
+    public void setWorldForce(float worldX, float worldY, float worldZ)
+    {
+        wfX = worldX;
+        wfY = worldY;
+        wfX = worldZ;
+    }
+
 }
