@@ -201,31 +201,54 @@ public class EngineMonitor : MonoBehaviour {
     }//END UPDATE
 
     public void setScanState(int scanState)
-{
+    {
         scannerState = scanState;
+    }
+
+    public int getLaserState()
+    {
+        return laserState;
     }
     public void setLaserState(int lazState)
     {
         laserState = lazState;
     }
+
+    public int getSpotState()
+    {
+        return spotState;
+    }
     public void setSpotState(int sptState)
     {
         spotState = sptState;
+    }
+
+    public int getInstState()
+    {
+        return instState;
     }
     public void setInstState(int inState)
     {
         instState = inState;
     }
+
+    public int getEngState()
+    {
+        return engState;
+    }
     public void setEngState(int eState)
     {
         engState = eState;
+    }
+
+    public int getFwdRev()
+    {
+        return FwdRevState;
     }
     public void setFwdRev(int frState)
     {
         FwdRevState = frState;
     }
-    public int getLaserState()
-    {
-        return laserState;
-    }
+    
+    
 }

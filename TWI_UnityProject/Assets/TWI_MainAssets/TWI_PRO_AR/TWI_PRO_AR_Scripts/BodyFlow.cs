@@ -9,15 +9,26 @@ using System.Collections;
 public class BodyFlow : MonoBehaviour {
 
     public SubControl myShip;
-    public int sectionNumber;
+    //public int sectionNumber;
     public int blood;
     public int pressureChange;
     public Collider shipCol;
-    public BodyFlow[] adjacentSections;
+    //public BodyFlow[] adjacentSections;
     public float forceX, forceY, forceZ;
+    public float lightAngle;
+    public float lightRange;
+    public float lightIntensity;
+    private ShipLights shipLights;
+    public Color fogColor;
+    public float fogDensity;
+    private EnvironmentManager envManager;
+
 
     void Start()
     {
+
+        shipLights = GameObject.FindObjectOfType<ShipLights>();
+        envManager = GameObject.FindObjectOfType<EnvironmentManager>();
         if (!shipCol)
         {
             shipCol = myShip.GetComponent<Collider>();
@@ -31,9 +42,12 @@ public class BodyFlow : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        myShip.setSectionInt(sectionNumber);
+        //myShip.setSectionInt(sectionNumber);
         myShip.setBloodForce(blood);
         myShip.setPressure(pressureChange);
+        myShip.setWorldForce(forceX, forceY, forceZ);
+        shipLights.ChangeExteriorLights(lightIntensity, lightRange, lightAngle);
+        envManager.ChangeFog(fogDensity, fogColor);
         //Debug.Log(myShip.getSectionInt());
     }
 
