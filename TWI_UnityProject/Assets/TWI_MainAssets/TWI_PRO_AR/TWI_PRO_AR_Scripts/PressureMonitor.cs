@@ -22,10 +22,7 @@ public class PressureMonitor : MonoBehaviour {
         subPressure = Sub.getCabinPressure();
         subOxygen = Sub.getOxygenLevel();
         float pressRotY = Mathf.Abs(270.0f * (subPressure / Sub.maxPressure));
-        float oxyRotY = Mathf.Abs((270.0f * (subOxygen/Sub.maxOxygen)));
-        //float pressRotY = (90.0f * (subPressure / Sub.maxPressure));
-        //float oxyRotY = (90.0f * (subOxygen / Sub.maxOxygen));
-        Debug.Log("OxyRotY " + oxyRotY);
+        float oxyRotY = Mathf.Abs((270.0f * (subOxygen / Sub.maxOxygen)));   
         Vector3 pressureRot = new Vector3(0.0f, pressRotY, 0.0f);
         Vector3 oxygenRot = new Vector3(0.0f, oxyRotY, 0.0f);
         pressureNeedle.transform.localEulerAngles = pressureRot;
