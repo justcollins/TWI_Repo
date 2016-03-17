@@ -11,9 +11,10 @@ public class SubControl : MonoBehaviour {
     public GameObject interiorLights;
     private KeyboardManager keyboard;
 	
+    [HeaderAttribute("ship values")]
 	float UpDownVelocity 			= 0.0f; 
 	public float maxThrustValue 	= 10.0f;		//Max value to reach for thruster
-    public float minThrustValue 	= -10.0f;       //Min value for the thruster
+    public float minThrustValue 	= -5.0f;       //Min value for the thruster
 	public float thrust 			= 1.0f;			//For Debugging purpose otherwise should be private
     public float speed              = 1.0f;         //ship speed
     public float boost              = 5.0f;         //boost amount 
@@ -25,10 +26,24 @@ public class SubControl : MonoBehaviour {
 	float Pitch;
 	float UpDownTurn;
 	float yUpDownTrun;
+
+    [HeaderAttribute("pitch values")]
+    public float pitchMin  = -1.0f;
+    public float pitchMax  =  1.0f;
+    public float cPitchMin = 0.0f;
+    public float cPitchMax = 0.0f;
+
+    //yaw
+    float yawMin    = -1.0f;
+    float yawMax    =  1.0f;
+    float cYawMin   =  0.0f;
+    float cYawMax   =  0.0f;
+
 	
 	float Yaw;
 	float LeftRightTurn;
 	float yLeftRightTurn;
+
 	
 	bool isEngineOn = false;
 
@@ -41,7 +56,6 @@ public class SubControl : MonoBehaviour {
     private Vector3 worldForce;
     private int pressure;
 
-    private float wfX, wfY, wfZ;
 
     void Start()
     {
@@ -52,8 +66,7 @@ public class SubControl : MonoBehaviour {
 
     void FixedUpdate()
     {
-
-        //worldForce = new Vector3(wfX, wfY, wfZ);
+        
         if (sectionInt == 0)
             worldForce = new Vector3(0.0f, 0.0f, 1.0f);
         if (sectionInt == 1)
@@ -63,27 +76,38 @@ public class SubControl : MonoBehaviour {
 
         shipRB.AddForce(worldForce * bloodForce);
 
-        ///////////////////////// ENGINE ON ////////////////////
-       
-
 	}
+
+    void setStrafeLimit() 
+    {
+        cPitchMin = Pitch;
+        cPitchMax = Pitch;
+        cYawMin = Yaw;
+        cYawMax = Yaw;
+    }
+
 
     //////////////////////////// STRAFE MOVEMENT /////////////////////////
 	void StrafeMove ()
 	{
+        Pitch = Mathf.Clamp(Pitch, cPitchMin, cPitchMax);
+
+        Yaw = Mathf.Clamp(Yaw, cYawMin, cYawMax);
+
 		if (Input.GetKey (keyboard.Up))    //move up//
-			transform.Translate (Vector3.up * 10f * Time.deltaTime);
+            transform.Translate(Vector3.up * 10f * Time.deltaTime);
 
 		if (Input.GetKey (keyboard.Down))  //move down//
 			transform.Translate (Vector3.down * 10f * Time.deltaTime);
 
-		if (Input.GetKey (keyboard.Left))  //move left//
+        if (Input.GetKey(keyboard.Left))  //move left//
 			transform.Translate (Vector3.left * 10f * Time.deltaTime);
 
 		if (Input.GetKey (keyboard.Right)) //move right//
 			transform.Translate (Vector3.right * 10f * Time.deltaTime);
 	}
-	
+
+    ///////////////////////// ENGINE ON ////////////////////
 	void Update ()
 	{
         //Debug.Log(thrust);
@@ -115,6 +139,7 @@ public class SubControl : MonoBehaviour {
 
         }
 
+        /////////////////////// BOOST ///////////////////////
         if (Input.GetKeyDown(keyboard.Boost))
         {
             thrust = thrust + boost;
@@ -132,7 +157,6 @@ public class SubControl : MonoBehaviour {
             {
                 ForBack = !ForBack;
 
-                //thrust = 0.0f;
             }
 
             //smooth braking
@@ -151,18 +175,18 @@ public class SubControl : MonoBehaviour {
 
             //////////////////////// STRAFE /////////////////////
 
+            if(Input.GetKeyDown(keyboard.RightMouse)) {
+                setStrafeLimit();
+            }
+
+
             if (Input.GetKey(keyboard.RightMouse)) //if i press right mouse button 
             {
                 StrafeMove(); // do strafe movements (bellow)
             }
 
-            /////////////////////// BOOST ///////////////////////
-            //May change button - Error exists that it doesn't always seem to recognize GetKeyUp on the key.
 
-
-
-
-
+            
             //////////////////////// SHIP MOVEMENT ////////////////////
 
             /*
@@ -233,7 +257,7 @@ public class SubControl : MonoBehaviour {
 
             //Pitch//
             Pitch += UpDownTurn * Time.fixedDeltaTime;
-            Pitch = Mathf.Clamp(Pitch, -1.2f, 1.2f);
+            Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);                                                             //ERRORERRORERRORERRORERRORERRORERROR
 
             //Yaw//
             Yaw += LeftRightTurn * Time.fixedDeltaTime;
@@ -261,7 +285,7 @@ public class SubControl : MonoBehaviour {
 
             //Pitch Value engine off//
             Pitch += UpDownTurn * Time.fixedDeltaTime;
-            Pitch = Mathf.Clamp(Pitch, -0.2f, 0.2f);
+            Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);                                                                //ERRORERRORERRORERRORERRORERRORERROR
 
             //Yaw engine off//
             Yaw += LeftRightTurn * Time.fixedDeltaTime;
@@ -286,28 +310,28 @@ public class SubControl : MonoBehaviour {
 		Value = Mathf.Clamp(Value, -1, 1);
 		return Value;
 	}
-	
-	void MotorVelocityContorl()
-	{
-		if (isEngineOn)
-		{
-			float Hovering = (Mathf.Abs(GetComponent<Rigidbody>().mass * Physics.gravity.y) / UpDownValue); //for maintain altitude.
-			
-			if (UpDown != 0.0f)
-				UpDownVelocity += UpDown * 0.1f; //if Input Up/Down Axes, Increace UpDownVelocity for Increace altitude.
-			else
-				UpDownVelocity = Mathf.Lerp(UpDownVelocity, Hovering, Time.deltaTime); //if not input Up/Down Axes, Hovering.
-		}
-		CheckUpDownVelocity();
-	}
-	
-	void CheckUpDownVelocity()
-	{
-		if (UpDownVelocity > 1.0f)
-			UpDownVelocity = 1.0f;
-		else if (UpDownVelocity < 0.1f)
-			UpDownVelocity = 0.1f;
-	}
+
+    void MotorVelocityContorl()
+    {
+        if (isEngineOn)
+        {
+            float Hovering = (Mathf.Abs(GetComponent<Rigidbody>().mass * Physics.gravity.y) / UpDownValue); //for maintain altitude.
+
+            if (UpDown != 0.0f)
+                UpDownVelocity += UpDown * 0.1f; //if Input Up/Down Axes, Increace UpDownVelocity for Increace altitude.
+            else
+                UpDownVelocity = Mathf.Lerp(UpDownVelocity, Hovering, Time.deltaTime); //if not input Up/Down Axes, Hovering.
+        }
+        CheckUpDownVelocity();
+    }
+
+    void CheckUpDownVelocity()
+    {
+        if (UpDownVelocity > 1.0f)
+            UpDownVelocity = 1.0f;
+        else if (UpDownVelocity < 0.1f)
+            UpDownVelocity = 0.1f;
+    }
 
     public bool getForBack()
     {
@@ -348,12 +372,4 @@ public class SubControl : MonoBehaviour {
     {
         return pressure;
     }
-
-    public void setWorldForce(float worldX, float worldY, float worldZ)
-    {
-        wfX = worldX;
-        wfY = worldY;
-        wfX = worldZ;
-    }
-
 }
