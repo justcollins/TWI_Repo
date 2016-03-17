@@ -4,15 +4,16 @@ using System.Collections;
 ///<summary>
 ///This class manages the environment in the current scene. It takes in groups of meshes and turns them on and off, depending on what is the Current 
 ///Group, Previous Group, and Rest.
+///LOTS OF COMMENTS
 ///</summary>
 public class EnvironmentManager : MonoBehaviour {
 
-    public BodyFlow startingGroup;
-    public BodyFlow[] environmentGroups;
-    public SubControl ship;
-    private BodyFlow currentGroup;
+    //public BodyFlow startingGroup;
+    //public BodyFlow[] environmentGroups;
+    //public SubControl ship;
+    //private BodyFlow currentGroup;
     
-    private int curSection;
+    //private int curSection;
 
     ///<summary>
     ///This method controls setting what is the current group and what is the previous group.
@@ -24,26 +25,26 @@ public class EnvironmentManager : MonoBehaviour {
 
    
 
-	void Start () {
+	/*void Start () {
         curSection = ship.getSectionInt();
         SetActiveGroups(startingGroup);
-        /*if (!RenderSettings.fog) {
+        if (!RenderSettings.fog) {
             RenderSettings.fog = true;
-        }*/       
-    }
+        }      
+    }*/
 	
-	void Update () {
+	/*void Update () {
         //Debug.Log(curSection);
         curSection = ship.getSectionInt();
-        ManageVisibleGroup(curSection);
-	}
+        //ManageVisibleGroup(curSection);
+	}*/
 
-    public string GetCurrentGroup()
+    /*public string GetCurrentGroup()
     {
         return currentGroup.name;
-    }
+    }*/
 
-    public void SetActiveGroups(BodyFlow newCurrentGroup)
+    /*public void SetActiveGroups(BodyFlow newCurrentGroup)
     {
         newCurrentGroup.gameObject.SetActive(true);
         for (int j = 0; j < newCurrentGroup.adjacentSections.Length; j++)
@@ -52,9 +53,9 @@ public class EnvironmentManager : MonoBehaviour {
         }
         
 
-    }
+    }*/
 
-    private void ManageVisibleGroup(int section) {
+    /*private void ManageVisibleGroup(int section) {
         for(int i = 0; i < environmentGroups.Length; i++) {
             if (environmentGroups[i].sectionNumber == section)
             {
@@ -69,7 +70,7 @@ public class EnvironmentManager : MonoBehaviour {
             }
                  
         }
-    }
+    }*/
 
     public void ChangeFog(float newFogDensity, Color newFogColor) {
         RenderSettings.fogDensity = newFogDensity;

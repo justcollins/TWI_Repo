@@ -3,9 +3,12 @@ using System.Collections;
 
 public class Submarine_Resources : MonoBehaviour {
 
-    public int cabinPressure;
-    public float oxygenLevel;
-    public float shipEnergy;
+    private float cabinPressure;
+    private float oxygenLevel;
+    private float shipEnergy;
+    public float maxPressure;
+    public float maxOxygen;
+    public float maxEnergy;
 
     private float curTime;
     public float oxyTimer;
@@ -19,25 +22,27 @@ public class Submarine_Resources : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        shipEnergy = 100.0f;
-        oxygenLevel = 15.0f;
-        cabinPressure = 70;
+        setEnergyLevel(maxEnergy);
+        setOxygenLevel(maxOxygen);
+        setCabinPressure(0.0f);
         curTime = 0.0f;
         oxyTimer = 1.5f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        Debug.Log("maxOxy " + maxOxygen);
         curTime += Time.deltaTime;
         if (curTime >= oxyTimer)
         {
-            setOxygenLevel(3.0f);
+            setOxygenLevel(-3.0f);
+            setCabinPressure(4.0f);
             if (subCon.getEngineOn())
             {
                 //setEnergyLevel(0.5f);
             }
             //setEnergyLevel(0.2f);
-            setCabinPressure(subCon.getPressure());
+            //setCabinPressure(subCon.getPressure());
             //setSpeed(5);
            // Debug.Log(getCabinPressure());
             curTime = 0;
@@ -47,19 +52,20 @@ public class Submarine_Resources : MonoBehaviour {
         
 	}
 
-    public void setCabinPressure(int newPressure)
+    public void setCabinPressure(float newPressure)
     {
         cabinPressure = cabinPressure + newPressure;
     }
 
-    public int getCabinPressure()
+    public float getCabinPressure()
     {
         return cabinPressure;
     }
 
     public void setOxygenLevel(float newOxy)
     {
-        oxygenLevel = oxygenLevel - newOxy;
+        oxygenLevel += newOxy;
+        Debug.Log("OxyLevel " + oxygenLevel);
     }
 
     public float getOxygenLevel()

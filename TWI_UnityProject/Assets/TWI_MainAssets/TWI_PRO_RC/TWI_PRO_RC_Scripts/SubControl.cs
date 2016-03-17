@@ -55,6 +55,7 @@ public class SubControl : MonoBehaviour {
     private float bloodForce;
     private Vector3 worldForce;
     private int pressure;
+    private float wfX, wfY, wfZ;
 
 
     void Start()
@@ -66,14 +67,8 @@ public class SubControl : MonoBehaviour {
 
     void FixedUpdate()
     {
-        
-        if (sectionInt == 0)
-            worldForce = new Vector3(0.0f, 0.0f, 1.0f);
-        if (sectionInt == 1)
-            worldForce = new Vector3(1.0f, 0.0f, 1.0f);
-        if (sectionInt == 2)
-            worldForce = new Vector3(0.0f, 0.0f, 0.5f);
 
+        worldForce = new Vector3(wfX, wfY, wfZ);
         shipRB.AddForce(worldForce * bloodForce);
 
 	}
@@ -371,5 +366,11 @@ public class SubControl : MonoBehaviour {
     public int getPressure()
     {
         return pressure;
+    }
+    public void setWorldForce(float x, float y, float z)
+    {
+        wfX = x;
+        wfY = y;
+        wfZ = z;
     }
 }
