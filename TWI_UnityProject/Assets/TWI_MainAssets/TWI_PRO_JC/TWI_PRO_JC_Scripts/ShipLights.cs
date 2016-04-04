@@ -19,4 +19,5 @@ public class ShipLights : MonoBehaviour {
             light.spotAngle = newAngle;
         }
     }
+
 }
