@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Submarine_Resources : MonoBehaviour {
 
+    private float oxygenAdd;
+    private float pressureAdd;
     private float cabinPressure;
     private float oxygenLevel;
     private float shipEnergy;
@@ -20,44 +22,74 @@ public class Submarine_Resources : MonoBehaviour {
         setEnergyLevel(maxEnergy);
         setOxygenLevel(maxOxygen);
         setCabinPressure(0.0f);
+        setOxygenAdd(4.8f);
         curTime = 0.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(shipEnergy);
-        Debug.Log(curTime);
+		Cursor.visible = false;
         curTime += Time.deltaTime;
         if (curTime >= maxTime)
         {
-            setEnergyLevel(1.75f);
-            if (subCon.getEngineOn())
+            if (shipEnergy <= maxEnergy)
             {
-                setEnergyLevel(-1.0f);
+                setEnergyLevel(1.75f);
+
+                if (subCon.getEngineOn())
+                {
+                    setEnergyLevel(-2.0f);
+                }
+                if (monitor.getSpotState() == 1)
+                {
+                    setEnergyLevel(-1.0f);
+                }
+                if (monitor.getInstState() == 1)
+                {
+                    setEnergyLevel(-0.5f);
+                }
             }
-            if (monitor.getSpotState() == 1)
+            else
+                shipEnergy = maxEnergy;
+
+            if (oxygenLevel <= maxOxygen)
+                setOxygenLevel(-.08f + oxygenAdd);
+            else
+                oxygenLevel = maxOxygen;
+
+            if (cabinPressure > 0)
             {
-                setEnergyLevel(-1.0f);
+                setCabinPressure(-1.0f + pressureAdd);
             }
-            if (monitor.getInstState() == 1)
-            {
-                setEnergyLevel(-0.5f);
-            }
+            else
+                cabinPressure = 0;
             curTime = 0;
             
         }
+		if(shipEnergy < 0)
+			shipEnergy = 0;
 
         
 	}
 
     public void setCabinPressure(float newPressure)
     {
-        cabinPressure = cabinPressure + newPressure;
+        cabinPressure += newPressure;
+    }
+
+    public void setPressureAdd(float newPressure)
+    {
+        pressureAdd = newPressure;
     }
 
     public float getCabinPressure()
     {
         return cabinPressure;
+    }
+
+    public void setOxygenAdd(float newOxy)
+    {
+        oxygenAdd = newOxy;
     }
 
     public void setOxygenLevel(float newOxy)

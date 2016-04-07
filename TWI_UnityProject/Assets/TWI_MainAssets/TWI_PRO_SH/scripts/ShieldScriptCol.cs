@@ -4,12 +4,23 @@ using System.Collections;
 public class ShieldScriptCol : MonoBehaviour 
 {
     //public Collider enemyCol;
+    [Range(0, 100)] public float shieldDamage;
+	private float curTime, maxTime;
+
+
+	void start(){
+		maxTime = 0.5f;
+	}
 
     void OnTriggerStay(Collider taggers)
     {
-        if (taggers.gameObject.tag == "Enemy")
+        if (taggers.CompareTag ("Enemy") || taggers.CompareTag("Arbiter"))
         {
-            Debug.Log("Something in my shield");
+			curTime += Time.deltaTime;
+			if(curTime >= maxTime){
+				taggers.gameObject.GetComponent<EnemyHealth>().AddHealth(-shieldDamage);
+				curTime = 0.0f;
+			}
         }
     }
 }

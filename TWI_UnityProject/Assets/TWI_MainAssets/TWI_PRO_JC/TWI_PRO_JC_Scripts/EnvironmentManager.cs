@@ -8,6 +8,10 @@ using System.Collections;
 ///</summary>
 public class EnvironmentManager : MonoBehaviour {
 
+    private float newDensity;
+    private Color newColor;
+    private bool changingFog;
+
     //public BodyFlow startingGroup;
     //public BodyFlow[] environmentGroups;
     //public SubControl ship;
@@ -22,7 +26,10 @@ public class EnvironmentManager : MonoBehaviour {
     ///your public gameobjects and enter that in.
     ///</summary>
     
-
+    private void Start() {
+        newDensity = RenderSettings.fogDensity;
+        newColor = RenderSettings.fogColor;
+    }
    
 
 	/*void Start () {
@@ -72,9 +79,24 @@ public class EnvironmentManager : MonoBehaviour {
         }
     }*/
 
+    private void Update() {
+        
+
+        if (RenderSettings.fogDensity == newDensity && RenderSettings.fogColor == newColor) {
+            changingFog = false;
+            Debug.Log("not changing fog");
+        } else {
+            Debug.Log("changing fog");
+            RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, newDensity, Time.time / 1.0f);
+            RenderSettings.fogColor = Color.Lerp(RenderSettings.fogColor, newColor, Time.time / 1.0f);
+        }
+    }
+
     public void ChangeFog(float newFogDensity, Color newFogColor) {
-        RenderSettings.fogDensity = newFogDensity;
-        RenderSettings.fogColor = newFogColor;
+        Debug.Log("Time to change");
+        changingFog = true;
+        newDensity = newFogDensity;
+        newColor = newFogColor;
     }
 
 }
