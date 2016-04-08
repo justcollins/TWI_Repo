@@ -38,6 +38,7 @@ public class EngineMonitor : MonoBehaviour {
         baseRend.enabled = true;
         baseRend.material = baseMat;
         keyboard = FindObjectOfType<KeyboardManager>();
+        
 	}
 	
 	// Update is called once per frame
@@ -154,12 +155,12 @@ public class EngineMonitor : MonoBehaviour {
             if (subCon.getForBack())
             {
                 Fwd_Lite.SetActive(true);
-                Rev_Lite.SetActive(false);
+                Rev_Lite.SetActive(false);         
             }
             else
             {
                 Fwd_Lite.SetActive(false);
-                Rev_Lite.SetActive(true);
+                Rev_Lite.SetActive(true); 
             }
         }
         else

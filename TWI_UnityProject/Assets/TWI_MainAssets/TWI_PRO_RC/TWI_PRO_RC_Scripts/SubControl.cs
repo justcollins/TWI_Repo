@@ -13,11 +13,11 @@ public class SubControl : MonoBehaviour {
 	
     [HeaderAttribute("ship values")]
 	float UpDownVelocity 			= 0.0f; 
-	public float maxThrustValue 	= 10.0f;		//Max value to reach for thruster
-    public float minThrustValue 	= -5.0f;       //Min value for the thruster
-	public float thrust 			= 1.0f;			//For Debugging purpose otherwise should be private
-    public float speed              = 1.0f;         //ship speed
-    public float boost              = 5.0f;         //boost amount 
+	public float maxThrustValue;		//Max value to reach for thruster
+    private float minThrustValue;       //Min value for the thruster
+	public float thrust;			//For Debugging purpose otherwise should be private
+    public float speed;         //ship speed
+    public float boost;         //boost amount 
 
 	float UpDownValue;
 	float UpDown;
@@ -66,14 +66,13 @@ public class SubControl : MonoBehaviour {
         keyboard = FindObjectOfType<KeyboardManager>();
         exteriorLights.SetActive(false);
         interiorLights.SetActive(false);
+        minThrustValue = -maxThrustValue/2;
     }
 
     void FixedUpdate()
     {
-
         worldForce = new Vector3(wfX, wfY, wfZ);
         shipRB.AddForce(worldForce * bloodForce);
-
 	}
 
     void setStrafeLimit() 
@@ -138,25 +137,31 @@ public class SubControl : MonoBehaviour {
         }
 
         /////////////////////// BOOST ///////////////////////
-        if (Input.GetKeyDown(keyboard.Boost))
-        {
-            thrust = thrust + boost;
-            subRes.setEnergyLevel(-3.0f);
-            curTime += Time.deltaTime;
-            if (curTime >= maxTime)
-            {
-                subRes.setEnergyLevel(-3.0f);
-                curTime = 0;
-            }
-        }
-
-        else if (Input.GetKeyUp(keyboard.Boost))
-        {
-            thrust = thrust - boost;
-        }
+        
 
         if (isEngineOn)
         {
+
+            if (Input.GetKeyDown(keyboard.Boost))
+            {
+                thrust = thrust + boost;
+                subRes.setEnergyLevel(-3.0f);
+                
+            }
+			if(Input.GetKey(keyboard.Boost)){
+				curTime += Time.deltaTime;
+				if (curTime >= maxTime)
+				{
+					subRes.setEnergyLevel(-3.0f);
+					curTime = 0.0f;
+				}
+			}
+
+            else if (Input.GetKeyUp(keyboard.Boost))
+            {
+                thrust = thrust - boost;
+				curTime = 0.0f;
+            }
 
             if (Input.GetKeyDown(keyboard.MiddleMouse)) // middle mouse button click
             {
@@ -262,7 +267,7 @@ public class SubControl : MonoBehaviour {
 
             //Pitch//
             Pitch += UpDownTurn * Time.fixedDeltaTime;
-            Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);                                                             //ERRORERRORERRORERRORERRORERRORERROR
+            Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);
 
             //Yaw//
             Yaw += LeftRightTurn * Time.fixedDeltaTime;
@@ -347,17 +352,6 @@ public class SubControl : MonoBehaviour {
     {
         return isEngineOn;
     }
-
-    public void setSectionInt(int newSect)
-    {
-        sectionInt = newSect;
-    }
-
-    public int getSectionInt()
-    {
-        return sectionInt;
-    }
-
     public void setBloodForce(float newBlood)
     {
         bloodForce = newBlood;
@@ -367,20 +361,13 @@ public class SubControl : MonoBehaviour {
     {
         return bloodForce;
     }
-
-    public void setPressure(int pres)
-    {
-        pressure = pres;
+    public void setWorldForce(Vector3 bloodForce) {
+        wfX = bloodForce.x;
+        wfY = bloodForce.y;
+        wfZ = bloodForce.z;
     }
-
-    public int getPressure()
+    public float getMinThrust()
     {
-        return pressure;
-    }
-    public void setWorldForce(float x, float y, float z)
-    {
-        wfX = x;
-        wfY = y;
-        wfZ = z;
+        return minThrustValue;
     }
 }
