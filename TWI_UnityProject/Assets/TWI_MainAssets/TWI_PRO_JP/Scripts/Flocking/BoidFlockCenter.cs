@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections;
 
 /**
@@ -26,12 +26,38 @@ public class BoidFlockCenter : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider other) {
+	void OnTriggerStay(Collider other) {
 		if (other.tag == playerTag) {
 			ChangeTarget(other.transform);
 		} else if ( other.GetComponent<Waypoint>() ) {
-			nearestWaypoint = other.GetComponent<Waypoint>().next.transform;
-			ChangeTarget(nearestWaypoint);
+			if (other.transform == nearestWaypoint) {
+
+				if ( controller.goinForth ) { //goin forward
+					if ( other.GetComponent<Waypoint>().next ) { // if there is a next, then go there
+						//Debug.Log ( "there's a next; goin to " + other.gameObject.name );
+						nearestWaypoint = other.GetComponent<Waypoint>().next.transform;
+						ChangeTarget(nearestWaypoint);
+					} else { // otherwise turn around
+						//Debug.Log ( "turning around" );
+						controller.goinForth = false;
+						nearestWaypoint = other.GetComponent<Waypoint>().prev.transform;
+						ChangeTarget(nearestWaypoint);
+					}
+				} else { // goin backwards
+					if ( other.GetComponent<Waypoint>().prev ) { // if there is a previous, then go there
+						//Debug.Log ( "there's a next; goin to " + other.gameObject.name );
+						nearestWaypoint = other.GetComponent<Waypoint>().prev.transform;
+						ChangeTarget(nearestWaypoint);
+					} else { // otherwise turn around
+						//Debug.Log ( "turning around" );
+						controller.goinForth = true;
+						nearestWaypoint = other.GetComponent<Waypoint>().next.transform;
+						ChangeTarget(nearestWaypoint);
+					}
+				}
+
+
+			}
 		}
 	}
 
