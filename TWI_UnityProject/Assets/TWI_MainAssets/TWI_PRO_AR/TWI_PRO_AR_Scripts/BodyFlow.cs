@@ -10,11 +10,11 @@ public class BodyFlow : MonoBehaviour {
 
     public SubControl myShip;
     //public int sectionNumber;
-    public int blood;
-    public int pressureChange;
+    public float blood;
+    public float pressureChange;
+    public float oxygenChange;
     public Collider shipCol;
     //public BodyFlow[] adjacentSections;
-    public float forceX, forceY, forceZ;
     public float lightAngle;
     public float lightRange;
     public float lightIntensity;
@@ -22,6 +22,7 @@ public class BodyFlow : MonoBehaviour {
     public Color fogColor;
     public float fogDensity;
     private EnvironmentManager envManager;
+    private Submarine_Resources subRes;
 
 
     void Start()
@@ -29,26 +30,27 @@ public class BodyFlow : MonoBehaviour {
 
         shipLights = GameObject.FindObjectOfType<ShipLights>();
         envManager = GameObject.FindObjectOfType<EnvironmentManager>();
+        subRes = GameObject.FindObjectOfType<Submarine_Resources>();
         if (!shipCol)
         {
             shipCol = myShip.GetComponent<Collider>();
         }
     }
 
-    void Update()
-    {
-        OnTriggerEnter(shipCol);
-    }
-
     void OnTriggerEnter(Collider other)
     {
-        //myShip.setSectionInt(sectionNumber);
-        myShip.setBloodForce(blood);
-        myShip.setPressure(pressureChange);
-        myShip.setWorldForce(forceX, forceY, forceZ);
-        shipLights.ChangeExteriorLights(lightIntensity, lightRange, lightAngle);
-        envManager.ChangeFog(fogDensity, fogColor);
-        //Debug.Log(myShip.getSectionInt());
+        
+        if (other.tag == "Player")
+        {
+            //myShip.setSectionInt(sectionNumber);
+            subRes.setOxygenAdd(oxygenChange);
+            myShip.setBloodForce(blood);
+            subRes.setPressureAdd(pressureChange);
+            myShip.setWorldForce(transform.forward);
+            shipLights.ChangeExteriorLights(lightIntensity, lightRange, lightAngle);
+            envManager.ChangeFog(fogDensity, fogColor);
+            //Debug.Log(myShip.getSectionInt());
+        }
     }
 
    

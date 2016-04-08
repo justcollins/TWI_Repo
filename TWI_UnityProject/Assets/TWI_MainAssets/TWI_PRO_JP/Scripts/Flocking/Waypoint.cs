@@ -11,13 +11,11 @@ using System.Collections;
 
 public class Waypoint : MonoBehaviour {
 
-	public Hub myHub;
 	public Waypoint next;
+	public Waypoint prev;
 	public float radius = 20f;
 	private SphereCollider col;
 	public bool visible = true;
-	public bool teleportPoint = false;
-	public float teleportDelay = 50f;
 
 	void Awake() {
 		col = GetComponent<SphereCollider>();
