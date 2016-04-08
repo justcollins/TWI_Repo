@@ -18,6 +18,7 @@ public class SuperRadar4 : MonoBehaviour {
 	public GameObject RightSp;
 	public GameObject FarRightSp;
     private KeyboardManager keyboard;
+    public Submarine_Resources subRes;
 
 	Image image;
 	Image above;
@@ -304,7 +305,6 @@ public class SuperRadar4 : MonoBehaviour {
 
 		ShortRadarFired = true;
 		radarBlip1Active = true;
-
 		yield return new WaitForSeconds (10);
 
 		col.a = 0f;
@@ -326,7 +326,7 @@ public class SuperRadar4 : MonoBehaviour {
 		float alph = 0.1f+(dist/((dist/10f)*(dist- Mathf.Sqrt(dist))));
 		idc.a = alph;
 		Indicator.color = idc;
-
+        
 		yield return new WaitForSeconds (10);
 
 		idc.a = 0f;
