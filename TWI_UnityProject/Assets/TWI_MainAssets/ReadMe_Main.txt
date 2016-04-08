@@ -1,6 +1,9 @@
 This is the Main folder where all Assets(Scripts/Models/etc) will be stored in for all things made after 12/19/15.
 Everything made before 12/19/15 is to be considered experimental and is located in the ExperimentalScripts folder.
 
+This Project is done in Unity 5.2.0f3, so please make sure you have that Unity version before working on anything. Having a newer or older version can cause problems when
+integrating with others who are on the correct version.
+
 Inside of this folder, are personal work folders for every member of the team, along with folders containing prefabs, materials, and models for what the team might need
 for testing.
 
