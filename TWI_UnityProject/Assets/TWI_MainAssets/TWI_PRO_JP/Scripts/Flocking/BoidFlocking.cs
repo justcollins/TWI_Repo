@@ -23,7 +23,12 @@ public class BoidFlocking : MonoBehaviour {
 	IEnumerator Start() {
 		while (!attached) {
 			if (controller) {
-				rb.velocity += CalculateSteering() * Time.deltaTime;
+				if (controller.chasee == ShipVisibility.GetShip().transform) {
+                    //Debug.Log("Steering to Fuckwad");
+					rb.velocity += SteerDirectlyToFucker() * Time.deltaTime;
+				} else {
+					rb.velocity += CalculateSteering() * Time.deltaTime;
+				}
 
 				// enforce min and max velocity
 				float speed = rb.velocity.magnitude;
@@ -49,6 +54,11 @@ public class BoidFlocking : MonoBehaviour {
 		return (center + velocity + follow * 2 + randomize);
 	}
 
+	Vector3 SteerDirectlyToFucker() {
+		rb.velocity = Vector3.zero;
+		return (controller.chasee.position - transform.position );
+	}
+
     void OnCollisionEnter(Collision col) {
 		if (col.gameObject.tag == "Player Weapon") {
 			DestroyMe ();
@@ -61,9 +71,10 @@ public class BoidFlocking : MonoBehaviour {
 	}
 
 	public void StickToOther(GameObject go) {
-		if (controller.stickToPlayer) {
+		if ((controller.stickToPlayer)&&(!attached)) {
 			transform.parent = go.transform;
 			FixedJoint joint = go.AddComponent <FixedJoint> () as FixedJoint;
+			rb.velocity = Vector3.zero;
 			joint.connectedBody = this.rb;
 			attached = true;
 		}
