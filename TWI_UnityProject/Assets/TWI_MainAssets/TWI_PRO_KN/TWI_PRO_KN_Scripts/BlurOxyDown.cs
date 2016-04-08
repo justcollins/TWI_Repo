@@ -6,7 +6,7 @@ public class BlurOxyDown : MonoBehaviour
 {
 	public Submarine_Resources sub;
 	public ColorCorrectionCurves ccc;
-	private float value;
+	public float value;
 	public float subt;
 
 	// Use this for initialization
