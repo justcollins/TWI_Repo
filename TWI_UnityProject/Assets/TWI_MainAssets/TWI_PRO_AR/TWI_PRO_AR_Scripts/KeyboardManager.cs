@@ -18,4 +18,6 @@ public class KeyboardManager : MonoBehaviour {
     public KeyCode Boost;
     public KeyCode ExteriorLights;
     public KeyCode InteriorLights;
+    public KeyCode Dossier;
+    public KeyCode ControlPanel;
 }
