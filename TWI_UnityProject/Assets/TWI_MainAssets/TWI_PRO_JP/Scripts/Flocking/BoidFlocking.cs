@@ -12,15 +12,23 @@ public class BoidFlocking : MonoBehaviour {
 
 	internal BoidController controller;
 	private Rigidbody rb;
+	public string playerWeaponTag = "Player Weapon";
+
+	private bool attached = false;
 
 	void Awake() {
 		rb = GetComponent<Rigidbody> ();
 	}
 
 	IEnumerator Start() {
-		while (true) {
+		while (!attached) {
 			if (controller) {
-				rb.velocity += CalculateSteering() * Time.deltaTime;
+				if (controller.chasee == ShipVisibility.GetShip().transform) {
+                    //Debug.Log("Steering to Fuckwad");
+					rb.velocity += SteerDirectlyToFucker() * Time.deltaTime;
+				} else {
+					rb.velocity += CalculateSteering() * Time.deltaTime;
+				}
 
 				// enforce min and max velocity
 				float speed = rb.velocity.magnitude;
@@ -29,7 +37,7 @@ public class BoidFlocking : MonoBehaviour {
 				} else if (speed < controller.minVelocity) {
 					rb.velocity = rb.velocity.normalized*controller.minVelocity;
 				}
-				yield return new WaitForSeconds( Random.Range (0.3f, 0.5f) );
+				yield return new WaitForSeconds( Random.Range (controller.lowerboundWait, controller.upperboundWait) );
 			}
 		}
 	}
@@ -44,6 +52,32 @@ public class BoidFlocking : MonoBehaviour {
 		Vector3 follow = controller.chasee.position - transform.position;
 
 		return (center + velocity + follow * 2 + randomize);
+	}
+
+	Vector3 SteerDirectlyToFucker() {
+		rb.velocity = Vector3.zero;
+		return (controller.chasee.position - transform.position );
+	}
+
+    void OnCollisionEnter(Collision col) {
+		if (col.gameObject.tag == "Player Weapon") {
+			DestroyMe ();
+		}
+    }
+
+	public void DestroyMe() {
+		controller.RemoveBoid(this);
+		GameObject.Destroy(this.gameObject);
+	}
+
+	public void StickToOther(GameObject go) {
+		if ((controller.stickToPlayer)&&(!attached)) {
+			transform.parent = go.transform;
+			FixedJoint joint = go.AddComponent <FixedJoint> () as FixedJoint;
+			rb.velocity = Vector3.zero;
+			joint.connectedBody = this.rb;
+			attached = true;
+		}
 	}
 }
 
