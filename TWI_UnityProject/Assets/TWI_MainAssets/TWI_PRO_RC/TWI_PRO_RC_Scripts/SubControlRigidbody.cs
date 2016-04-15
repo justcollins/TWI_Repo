@@ -300,7 +300,7 @@ public class SubControlRigidbody : MonoBehaviour
         {
             /////////////////////////// FORWARD MOVEMENT ///////////////////////
             //transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
-            rigidbody.AddForce(transform.forward * thrust, ForceMode.Acceleration);
+            rigidbody.AddForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
 
 
             UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f);
@@ -322,7 +322,7 @@ public class SubControlRigidbody : MonoBehaviour
             //rigidbody.AddTorque(transform.up * Pitch * 20, ForceMode.Force);
             //rigidbody.AddTorque(transform.right * Yaw * 20, ForceMode.Force);
             //rigidbody.AddTorque(Pitch, Yaw, 0.0f, ForceMode.Force);
-            rigidbody.AddTorque(Vector3.up * Yaw, ForceMode.Force);
+            rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime * Yaw, ForceMode.Force); //*erase comment* added time.fixeddeltatime  
             rigidbody.AddTorque(Vector3.right * 100.0f * Pitch, ForceMode.Force);
             
         }
@@ -332,7 +332,7 @@ public class SubControlRigidbody : MonoBehaviour
         {
 
             //transform.position += transform.forward * Time.fixedDeltaTime * thrust;
-            rigidbody.AddForce(transform.forward * thrust, ForceMode.Acceleration);
+            rigidbody.AddForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
 
             UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 0.5f, 0.1f);
 
