@@ -1,22 +1,15 @@
 fileFormatVersion: 2
-guid: 2624764c124564dceb17b41339b957d0
-timeCreated: 1456809977
-licenseType: Free
+guid: 1a3e3aa251925244ab998df813523ce3
+timeCreated: 1460684492
+licenseType: Pro
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: //RootNode
-    100002: polySurface13
-    100004: radar1:RDR_Shell_GM
     400000: //RootNode
-    400002: polySurface13
-    400004: radar1:RDR_Shell_GM
-    2300000: polySurface13
-    2300002: radar1:RDR_Shell_GM
-    3300000: polySurface13
-    3300002: radar1:RDR_Shell_GM
-    4300000: radar1:RDR_Shell_GM
-    4300002: polySurface13
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: HeartL
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -27,6 +20,10 @@ ModelImporter:
     bakeSimulation: 0
     optimizeGameObjects: 0
     motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
@@ -70,8 +67,10 @@ ModelImporter:
     legStretch: .0500000007
     feetSpacing: 0
     rootMotionBoneName: 
+    hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  humanoidOversampling: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
