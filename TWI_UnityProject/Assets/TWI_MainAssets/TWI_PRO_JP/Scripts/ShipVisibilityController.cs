@@ -11,29 +11,31 @@ using System.Collections;
  */
 
 public class ShipVisibilityController : MonoBehaviour {
-	
+
 	public KeyCode addVisibility;
 	public KeyCode removeVisibility;
 	public KeyCode addTagPercentage;
 	public KeyCode removeTagPercentage;
 	public KeyCode switchTagBool;
-	
+
 	public Slider visibilitySlider;
 	public Slider tagPercentSlider;
 	public Image tagImage;
 	public Color tagColor;
-	
+
+	public GameObject player;
+
+	void Start() {
+		ShipVisibility.SetShip ( player );
+	}
+
 	void Update () {
 		ManipulateVisiblity ();
 		ManipulateTagPercentage ();
 		ManipulateTagBool ();
 		UpdateGUI ();
-		
-		if (ShipVisibility.GetTagPercent() >= 100f) {
-			ShipVisibility.SetTagged(true);
-		}
 	}
-	
+
 	void ManipulateVisiblity() {
 		if ((Input.GetKey (addVisibility)) && (ShipVisibility.GetVisibility() < 100f)) {
 			ShipVisibility.AddVisibility( 0.5f );
@@ -42,7 +44,7 @@ public class ShipVisibilityController : MonoBehaviour {
 			ShipVisibility.AddVisibility( -0.5f );
 		}
 	}
-	
+
 	void ManipulateTagPercentage() {
 		if ((Input.GetKey (addTagPercentage)) && (ShipVisibility.GetTagPercent() < 100f)) {
 			ShipVisibility.AddTagPercent( 0.5f );
@@ -51,13 +53,13 @@ public class ShipVisibilityController : MonoBehaviour {
 			ShipVisibility.AddTagPercent( -0.5f );
 		}
 	}
-	
+
 	void ManipulateTagBool() {
 		if (Input.GetKeyDown (switchTagBool)) {
 			ShipVisibility.SetTagged( !ShipVisibility.GetTagged() );
 		}
 	}
-	
+
 	void UpdateGUI() {
 		visibilitySlider.value = ShipVisibility.GetVisibility ();
 		tagPercentSlider.value = ShipVisibility.GetTagPercent ();
@@ -67,8 +69,8 @@ public class ShipVisibilityController : MonoBehaviour {
 			tagImage.color = Color.white;
 		}
 	}
-	
-	
+
+
 }
 
 /// <comment>

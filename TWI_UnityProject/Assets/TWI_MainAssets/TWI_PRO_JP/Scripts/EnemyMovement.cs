@@ -19,28 +19,43 @@ public enum EnemyType {
 }
 
 public class EnemyMovement : MonoBehaviour {
-	
+
 	[Header("Basic Options")]
+	public EnemyType type;
 	public float minVelocity = 0.5f;
 	public float maxVelocity = 20f;
 	public float randomness = 1.0f;
 	public Transform chasee;
 	public float rotateSpeed = 20f;
-	
+	public float stopRadius = 20f;
+
 	private Rigidbody rb;
-	
+
 	void Awake() {
 		rb = GetComponent<Rigidbody> ();
 	}
-	
+
 	void Update() {
-		Movement ();
+
+		float dstToTarget = Vector3.Distance (transform.position, chasee.position);
+
+		if (type == EnemyType.Macrophage) { // unique to Macrophage
+
+			if ((chasee.gameObject == ShipVisibility.GetShip ()) && (dstToTarget < stopRadius)) {
+				//if ( dstToTarget < stopRadius ) {
+				Debug.Log ("stopping");
+				StopBeforePlayer ();
+			} else {
+				ShipVisibility.GetShip ().GetComponent<DamageHandler> ().setMacrophageNear(false);
+				Movement ();
+			}
+		} else { // other things
+			Movement ();
+		}
 		LookAtTarget ();
 	}
-	
+
 	void Movement() {
-		
-		//moves towards target
 		rb.velocity += CalculateSteering() * Time.deltaTime;
 		
 		// enforce min and max velocity
@@ -51,25 +66,20 @@ public class EnemyMovement : MonoBehaviour {
 			rb.velocity = rb.velocity.normalized*minVelocity;
 		}
 	}
-	
+
+	void StopBeforePlayer() {
+		ShipVisibility.GetShip ().GetComponent<DamageHandler> ().setMacrophageNear(true);
+		rb.velocity -= rb.velocity;
+	}
+
 	Vector3 CalculateSteering() {
 		Vector3 randomize = new Vector3 ((Random.value * 2) - 1, (Random.value * 2) - 1, (Random.value * 2) - 1);
 		randomize.Normalize ();
 		randomize *= randomness;
-		
+
 		return (( chasee.position - transform.position ) + (randomize));
 	}
-	
-	Vector3 AdjustVertically( float y ) {
-		Debug.Log ("Adjusting Vertically");
-		return new Vector3( 0, y, 0 ) ;
-	}
-	
-	Vector3 AdjustHorizontally( float x ) {
-		Debug.Log ("Adjusting Horizontally");
-		return new Vector3( x, 0, 0 ) ;
-	}
-	
+
 	void LookAtTarget() {
 		Vector3 dir;
 		dir = (chasee.position - transform.position).normalized;
