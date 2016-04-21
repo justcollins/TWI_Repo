@@ -322,7 +322,7 @@ public class SubControlRigidbody : MonoBehaviour
             //rigidbody.AddTorque(transform.up * Pitch * 20, ForceMode.Force);
             //rigidbody.AddTorque(transform.right * Yaw * 20, ForceMode.Force);
             //rigidbody.AddTorque(Pitch, Yaw, 0.0f, ForceMode.Force);
-            rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime * Yaw, ForceMode.Force); //*erase comment* added time.fixeddeltatime  
+            rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime  * Yaw, ForceMode.Force); //*erase comment* added time.fixeddeltatime  
             rigidbody.AddTorque(Vector3.right * 100.0f * Pitch, ForceMode.Force);
             
         }
