@@ -11,27 +11,30 @@ public class ActiveEnvironments : MonoBehaviour {
    
 	// Use this for initialization
 	void Start () {
+        allObj = new GameObject[200];
+        allObj = FindObjectsOfType<GameObject>(); 
+        activeEnv = new List<GameObject>(25);
         for (int i = 0; i < startingEnv.Length; i++)
         {
-            addToList(startingEnv[i], i);
+            addToActive(startingEnv[i], i);
         }
-        activeEnv = new List<GameObject>(5);
-        allObj = new GameObject[200];
-        allObj = FindObjectsOfType<GameObject>();
-        envNames = new List<GameObject>(10);
-        findLayer(8);
 
+        envNames = new List<GameObject>(70);
+        findLayer(8);
     }
 	
 	// Update is called once per frame
 	void Update () {
+        Debug.Log("Count: " + envNames.Count);
+        foreach (GameObject e in envNames)
+            e.SetActive(false);
         for (int i = 0; i < envNames.Count; i++)
         {
             for (int j = 0; j < activeEnv.Count; j++)
             {
                 if (activeEnv[j].name == envNames[i].name)
                 {
-                    envNames[i].SetActive(true);
+                    activeEnv[j].SetActive(true);
                 }
             }
         }
@@ -57,7 +60,7 @@ public class ActiveEnvironments : MonoBehaviour {
         }*/
     }
 
-    public void addToList(GameObject envItem, int index)
+    public void addToActive(GameObject envItem, int index)
     {
         activeEnv.Insert(index, envItem);
     }
