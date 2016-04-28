@@ -300,7 +300,7 @@ public class SubControlRigidbody : MonoBehaviour
         {
             /////////////////////////// FORWARD MOVEMENT ///////////////////////
             //transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
-            rigidbody.AddForce(transform.forward * Time.fixedDeltaTime  * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
+            rigidbody.AddForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
 
 
             UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f);
@@ -310,10 +310,10 @@ public class SubControlRigidbody : MonoBehaviour
             //////    if (Transform.Rotate  )
             //////        rigidbody.AddTorque(-Vector3.up * Time.fixedDeltaTime * Yaw, ForceMode.Force);
             //////    else
-                    
+
 
             //////}
-        
+
 
             UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
             LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
@@ -331,8 +331,8 @@ public class SubControlRigidbody : MonoBehaviour
             //rigidbody.AddTorque(transform.up * Pitch * 20, ForceMode.Force);
             //rigidbody.AddTorque(transform.right * Yaw * 20, ForceMode.Force);
             //rigidbody.AddTorque(Pitch, Yaw, 0.0f, ForceMode.Force);
-            rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime * (Yaw/10.0f), ForceMode.VelocityChange); //*erase comment* added time.fixeddeltatime //force *CONTINUOUS MOVEMENT IN A CIRCLE *
-            rigidbody.AddTorque(Vector3.right * 100.0f * (Pitch/10.0f), ForceMode.VelocityChange); //horizontal works *NEED TO DO A IF BUTTON LET GO 
+            rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime * (Yaw / 10.0f), ForceMode.VelocityChange); //*erase comment* added time.fixeddeltatime //force *CONTINUOUS MOVEMENT IN A CIRCLE *
+            rigidbody.AddTorque(Vector3.right * 100.0f * (Pitch / 10.0f), ForceMode.VelocityChange); //horizontal works *NEED TO DO A IF BUTTON LET GO 
             //Debug.Log("turning");
         }
 
