@@ -305,6 +305,16 @@ public class SubControlRigidbody : MonoBehaviour
 
             UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f);
 
+            //////if (UpDown != KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f))
+            //////{
+            //////    if (Transform.Rotate  )
+            //////        rigidbody.AddTorque(-Vector3.up * Time.fixedDeltaTime * Yaw, ForceMode.Force);
+            //////    else
+                    
+
+            //////}
+        
+
             UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
             LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
 
