@@ -69,7 +69,7 @@ public class Radar : MonoBehaviour {
 //Location Lights
 	public Light[] lt;
 	public float amplitude;
-	private int Location = 0;
+	public int Location = 0;
 
 //Starts When Program Runs
 	void Start ()
@@ -320,9 +320,11 @@ IEnumerator LongRangeRoutine(Image Indicator, float dist, Text Distance)
 	{
 
 		LongRadarFired = true;
+		//lt[Location].isActiveAndEnabled = true;
 		lt[Location].intensity = amplitude;
 		yield return new WaitForSeconds (10);
 		lt[Location].intensity = 0f;
+		//lt[Location].isActiveAndEnabled = false;
 		subRes.setEnergyLevel (-8.0f);
 		LongRadarFired = false;	
 	}
