@@ -14,7 +14,6 @@
 	   ZWrite Off //affects depth. Meant to be off for transparenices
 	   Tags { "Queue" = "Transparent" }
 	   Blend One One //an additive, blends the colors together&make transparent
-//	   ZWrite On
 	   Cull Off //so we see it inside the object
    
 	   Pass 
@@ -44,18 +43,20 @@
 			{
 				float s = 1 / _Scale; //s and t is the same as u and v
 				float t = _Time[0]*_Rate*_Scale;
-				v2f o;
-				//o's values in terms of position,verts,uvs	 //mul multiplies a matrix with a matrix
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);//
+				v2f o;//"o" is now type "v2f"
+				//o's values in terms of position,verts,uvs
+				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);//mul multiplies a matrix with a matrix
    				o.vert = sin((v.vertex.xyz + t) * s);  
 				o.uv = sin((v.texcoord.xyz + t) * s) * _Distortion;
    
 				return o;//return all the values just assigned
 			}
  
-			half4 frag (v2f i) : COLOR
+			half4 frag (v2f i) : COLOR //4 vector component using half-precision-float coordinates
 			{
-				float3 vert = i.vert;
+				//semantically, float2/3/4 helps programmers know if they're dealing with
+					//coordinates(2),vectors(3), or colors(4)
+				float3 vert = i.vert; //vectors have x,y,z, so use float3
 				float3 uv = i.uv;
 				float mix = 1 + sin((vert.x - uv.x) + (vert.y - uv.y) + (vert.z - uv.z));
 				float mix2 = 1 + sin((vert.x + uv.x) - (vert.y + uv.y) - (vert.z + uv.z)) / _Distortion;
@@ -66,5 +67,5 @@
 			ENDCG
 		}
 	}
-	Fallback "Transparent/Diffuse"
+	Fallback "Transparent/Diffuse"//if anything fails, just show transparency
 }
