@@ -27,14 +27,14 @@ public class ActiveEnvironments : MonoBehaviour {
 	void Update () {
         Debug.Log("Count: " + envNames.Count);
         foreach (GameObject e in envNames)
-            e.SetActive(false);
+            e.GetComponent<MeshRenderer>().enabled = false;
         for (int i = 0; i < envNames.Count; i++)
         {
             for (int j = 0; j < activeEnv.Count; j++)
             {
                 if (activeEnv[j].name == envNames[i].name)
                 {
-                    activeEnv[j].SetActive(true);
+                    activeEnv[j].GetComponent<MeshRenderer>().enabled = true;
                 }
             }
         }
