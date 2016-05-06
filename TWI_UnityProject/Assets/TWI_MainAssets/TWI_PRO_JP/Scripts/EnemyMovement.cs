@@ -21,43 +21,35 @@ public enum EnemyType {
 public class EnemyMovement : MonoBehaviour {
 
 	[Header("Basic Options")]
-	public EnemyType type;
 	public float minVelocity = 0.5f;
 	public float maxVelocity = 20f;
-	public float randomness = 1.0f;
-	public Transform chasee;
+	//public float randomness = 1.0f;
+	internal Vector3 chaseePos;
+    public Transform chasee;
 	public float rotateSpeed = 20f;
-	public float stopRadius = 20f;
-
 	private Rigidbody rb;
+
+    public bool directSteering = false;
 
 	void Awake() {
 		rb = GetComponent<Rigidbody> ();
 	}
 
 	void Update() {
-
-		float dstToTarget = Vector3.Distance (transform.position, chasee.position);
-
-		if (type == EnemyType.Macrophage) { // unique to Macrophage
-
-			if ((chasee.gameObject == ShipVisibility.GetShip ()) && (dstToTarget < stopRadius)) {
-				//if ( dstToTarget < stopRadius ) {
-				Debug.Log ("stopping");
-				StopBeforePlayer ();
-			} else {
-				ShipVisibility.GetShip ().GetComponent<DamageHandler> ().setMacrophageNear(false);
-				Movement ();
-			}
-		} else { // other things
-			Movement ();
-		}
+		Movement ();
 		LookAtTarget ();
 	}
 
 	void Movement() {
-		rb.velocity += CalculateSteering() * Time.deltaTime;
-		
+
+		//moves towards target
+        if (directSteering) {
+            rb.velocity += CalculateSteering() * maxVelocity;
+            //rb.velocity = CalculateSteering() * (2*maxVelocity) * Time.deltaTime;
+        } else {
+            rb.velocity += CalculateSteering() * Time.deltaTime;
+        }
+
 		// enforce min and max velocity
 		float speed = rb.velocity.magnitude;
 		if (speed > maxVelocity) {
@@ -66,23 +58,20 @@ public class EnemyMovement : MonoBehaviour {
 			rb.velocity = rb.velocity.normalized*minVelocity;
 		}
 	}
-
-	void StopBeforePlayer() {
-		ShipVisibility.GetShip ().GetComponent<DamageHandler> ().setMacrophageNear(true);
-		rb.velocity -= rb.velocity;
-	}
-
+	
 	Vector3 CalculateSteering() {
-		Vector3 randomize = new Vector3 ((Random.value * 2) - 1, (Random.value * 2) - 1, (Random.value * 2) - 1);
-		randomize.Normalize ();
-		randomize *= randomness;
+        //Vector3 randomize = new Vector3 ((Random.value * 2) - 1, (Random.value * 2) - 1, (Random.value * 2) - 1);
+        //randomize.Normalize ();
+        //randomize *= randomness;
 
-		return (( chasee.position - transform.position ) + (randomize));
+        //return (( chaseePos - transform.position ) + (randomize));
+
+        return ( chaseePos - transform.position );
 	}
 
 	void LookAtTarget() {
 		Vector3 dir;
-		dir = (chasee.position - transform.position).normalized;
+		dir = (chaseePos - transform.position).normalized;
 		
 		if (dir == Vector3.zero) {
 		} else {
