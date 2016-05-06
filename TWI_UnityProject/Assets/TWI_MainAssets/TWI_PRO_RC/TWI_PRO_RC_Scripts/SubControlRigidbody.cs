@@ -11,8 +11,10 @@ public class SubControlRigidbody : MonoBehaviour
     public GameObject exteriorLights;
     public GameObject interiorLights;
     private KeyboardManager keyboard;
+    [SerializeField]
+    [Tooltip("Heko Mesh")]
     private new Rigidbody rigidbody;
-    public Rigidbody rb;
+    //public Rigidbody rb;
 
     [HeaderAttribute("ship values")]
     float UpDownVelocity = 0.0f;
@@ -62,7 +64,7 @@ public class SubControlRigidbody : MonoBehaviour
 
     private float curTime = 0.0f;
     private float maxTime = 1.0f;
-    private float maxAV = 2;
+    public float maxAV = 2;
     private bool keys;
 
     private void Awake() {
@@ -82,19 +84,18 @@ public class SubControlRigidbody : MonoBehaviour
     void Update()
     {
         ShipValueUpdate();
+
         if (keys == false)
-        {
+        {   
+            //This is where the ship rotate should stop
             rigidbody.angularVelocity = Vector3.zero;
 
         }
-        if (Input.GetKeyUp(keyboard.Up))
-        {
-            keys = false;
 
-
-        }
-
-        if (Input.GetKeyUp(keyboard.Down))
+        if (Input.GetKeyUp(keyboard.Up) ||
+            Input.GetKeyUp(keyboard.Down) ||
+            Input.GetKeyUp(keyboard.Left) ||
+            Input.GetKeyUp(keyboard.Right))
         {
             keys = false;
 
@@ -147,6 +148,11 @@ public class SubControlRigidbody : MonoBehaviour
         }
     }
 
+    /*
+     * KeyCode A or B is just the button press
+     * Value is the passed in will be the new update value
+     * _float is the value you want to increase or decrease by
+     */ 
     float KeyValue(KeyCode A, KeyCode B, float Value, float yValue, float _float, float SmoothTime)
     {
         if (Input.GetKey(A))
@@ -350,12 +356,13 @@ public class SubControlRigidbody : MonoBehaviour
             LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
             
             //Pitch ***CONTROLS THE UP AND DOWN***//
-            Pitch += UpDownTurn; //* Time.fixedDeltaTime //same as yaw comment
+            //Pitch = Pitch + UpDownTurn;
+            Pitch += UpDownTurn * Time.fixedDeltaTime; //* Time.fixedDeltaTime //same as yaw comment
             //CLAMPS THE PITCH ***CONTROLLS THE LEFT// 
             Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);
 
             //Yaw//
-            Yaw += LeftRightTurn; //* Time.fixedDeltaTime; doesnt have it normally so if it doesnt work take out time....
+            Yaw += LeftRightTurn * Time.fixedDeltaTime; //* Time.fixedDeltaTime; doesnt have it normally so if it doesnt work take out time....
 
             //Rotation//
             //transform.rotation =
@@ -365,12 +372,20 @@ public class SubControlRigidbody : MonoBehaviour
             //rigidbody.AddTorque(transform.right * Yaw * 20, ForceMode.Force);
             //rigidbody.AddTorque(Pitch, Yaw, 0.0f, ForceMode.Force);
 
+            //CALCULATES TORQUE FOR PITCH AND YAW (UP DOWN LEFT RIGHT)
+            Vector3 myTorque = new Vector3(Pitch, Yaw, 0.0f);
+
             //FORCE FOR UP MOVEMENT//
-            rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime * (Yaw / 10.0f), ForceMode.Force); //*erase comment* added time.fixeddeltatime //force *CONTINUOUS MOVEMENT IN A CIRCLE *
+            //rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime * (Yaw / 10.0f), ForceMode.Force); //*erase comment* added time.fixeddeltatime //force *CONTINUOUS MOVEMENT IN A CIRCLE *
+
             
+            //FORCE ON THE TORQUE//
+            rigidbody.AddTorque(myTorque, ForceMode.Force);
+            rigidbody.AddTorque(new Vector3(0.0f, 0.0f, 0.0f), ForceMode.Force);
+
             //FORCE FOR RIGHT//
-            rigidbody.AddTorque(Vector3.right * 100.0f * Pitch, ForceMode.Force); //horizontal works *NEED TO DO A IF BUTTON LET GO 
-            Debug.Log("turning");
+            //rigidbody.AddTorque(Vector3.right * 100.0f * Pitch, ForceMode.Force); //horizontal works *NEED TO DO A IF BUTTON LET GO 
+            //Debug.Log("turning");
         }
 
         //////////////////////////////////ENGINE OFF/////////////////////////////
