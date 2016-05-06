@@ -14,12 +14,16 @@ public class EnemySight : MonoBehaviour {
 	public EnemyType type;
 	private EnemyMovement em;
 	private BoidController bc;
+    private PathRequester pr;
 
 	private Transform nextWaypoint;
 	private float initialRadius;
 
-	//public bool backAndForth = false;
-	internal bool goinForth = true;
+    internal bool goinForth = true;
+
+    [Header("Pathfinding")]
+    public bool pathfinding;
+    private bool pathfindingOverride;
 
 	void Awake () {
 		switch ((int)type) {
@@ -47,7 +51,13 @@ public class EnemySight : MonoBehaviour {
 
 	private void MacrophageAwake() {
 		em = GetComponent<EnemyMovement> ();
+        if (pathfinding) {
+            pr = GetComponent<PathRequester>();
+            //pr.target = ShipVisibility.GetShip().transform;
+            pr.active = true;
+        }
 		nextWaypoint = em.chasee;
+        //nextWaypoint = null;
 	}
 
 	private void TaggerAwake() {
@@ -57,9 +67,22 @@ public class EnemySight : MonoBehaviour {
 
 	private void MacrophageUpdate() {
 		if (ShipVisibility.GetTagged ()) {
-			em.chasee = ShipVisibility.GetShip ().transform;
+            if (pathfinding) {
+                if ( Vector3.Distance(ShipVisibility.GetShip().transform.position, transform.position) > pr.waypointRadius ) {
+                    //if it is far enough, just go through the waypoints
+                    //Debug.Log("Steering thru");
+                    em.chaseePos = pr.currWaypoint; 
+                } else {
+                    //if it is close enough, just steer to the player
+                    //Debug.Log("DAT BITCH MINE");
+                    em.chaseePos = ShipVisibility.GetShip ().transform.position;
+                }
+            } else {
+		        em.chaseePos = ShipVisibility.GetShip ().transform.position;
+            }
 		} else {
-			em.chasee = nextWaypoint;
+			em.chaseePos = nextWaypoint.position;
+            em.chasee = nextWaypoint;
 		}
 	}
 
@@ -79,31 +102,29 @@ public class EnemySight : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider other) {
+	void OnTriggerStay(Collider other) {
 		switch((int)type) {
-
-			case 2: // macrophage
-			if (other.GetComponent<Waypoint>()) { // checks to see if it collided with a waypoint
-				if ( other.transform == em.chasee ) { // checks to see if the collided waypoint was the chasee
-					if ( goinForth ) { //goin forward
-						if ( other.GetComponent<Waypoint>().next ) { // if there is a next, then go there
-							nextWaypoint = other.GetComponent<Waypoint>().next.transform;
-						} else { // otherwise turn around
-							goinForth = false;
-							nextWaypoint = other.GetComponent<Waypoint>().prev.transform;
-						}
-					} else { // goin backwards
-						if ( other.GetComponent<Waypoint>().prev ) { // if there is a previous, then go there
-							nextWaypoint = other.GetComponent<Waypoint>().prev.transform;
-						} else { // otherwise turn around
-							goinForth = true;
-							nextWaypoint = other.GetComponent<Waypoint>().next.transform;
-						}
-					}
-
-				}
-			}
-			break; // end of case 2 (macrophage)
+            case 2: // macrophage
+                if (other.GetComponent<Waypoint>()) { // checks to see if it collided with a waypoint
+                    if (other.transform == em.chasee) { // checks to see if the collided waypoint was the chasee
+                        if (goinForth) { //goin forward
+                            if (other.GetComponent<Waypoint>().next) { // if there is a next, then go there
+                                nextWaypoint = other.GetComponent<Waypoint>().next.transform;
+                            } else { // otherwise turn around
+                                goinForth = false;
+                                nextWaypoint = other.GetComponent<Waypoint>().prev.transform;
+                            }
+                        } else { // goin backwards
+                            if (other.GetComponent<Waypoint>().prev) { // if there is a previous, then go there
+                                nextWaypoint = other.GetComponent<Waypoint>().prev.transform;
+                            } else { // otherwise turn around
+                                goinForth = true;
+                                nextWaypoint = other.GetComponent<Waypoint>().next.transform;
+                            }
+                        }
+                    }
+                }
+                break; // end of case 2 (macrophage)
 		}
 	}
 
