@@ -71,6 +71,7 @@ public class SubControlRigidbody : MonoBehaviour
 
     void Start()
     {
+        //for keyboard manager, lights, min thrust, and max angular velocity 
         keyboard = FindObjectOfType<KeyboardManager>();
         exteriorLights.SetActive(false);
         interiorLights.SetActive(false);
@@ -108,6 +109,7 @@ public class SubControlRigidbody : MonoBehaviour
         rigidbody.AddForce(worldForce * bloodForce);
     }
 
+    //strafe clamping
     void setStrafeLimit()
     {
         cPitchMin = Pitch;
@@ -225,8 +227,8 @@ public class SubControlRigidbody : MonoBehaviour
 
             }
 
-            //smooth braking
-            if (ForBack)
+            //smooth braking for movement//
+            if (ForBack) 
             {
                 if (thrust <= 0f)
                     thrust += 0.3f;
@@ -317,6 +319,8 @@ public class SubControlRigidbody : MonoBehaviour
                 thrust = minThrustValue;
         }
     }
+    //////////////////// TO TRY TO GET SPEED OF THE SHIP ROTATION USING WHEEL VELOCITY (TEST)/////////////
+    
     Vector3 CalcWheelVelocity(Vector3 localWheelPos)
     {
         return rigidbody.GetPointVelocity(transform.TransformPoint(localWheelPos));
@@ -326,7 +330,7 @@ public class SubControlRigidbody : MonoBehaviour
         if (isEngineOn)
         {
 
-           
+           //////////////// VELO GETS THE SPEED OF THE ROTATION  ////////////////
             Vector3 velo = CalcWheelVelocity(transform.position);
 
             
@@ -336,19 +340,18 @@ public class SubControlRigidbody : MonoBehaviour
             //transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
             rigidbody.AddForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
 
-           
+           //UPDOWN//
             UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f);
             
-
-
-            
-
-
-
+            //UPDOWN'S TURNING WHEN YOU PRESS UP OR DOWN//
             UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
+            
+            //LEFT RIGHTS TURNING WHEN YOU PRESS LEFT OR RIGHT//
             LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
-            //Pitch//
+            
+            //Pitch ***CONTROLS THE UP AND DOWN***//
             Pitch += UpDownTurn; //* Time.fixedDeltaTime //same as yaw comment
+            //CLAMPS THE PITCH ***CONTROLLS THE LEFT// 
             Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);
 
             //Yaw//
@@ -361,7 +364,11 @@ public class SubControlRigidbody : MonoBehaviour
             //rigidbody.AddTorque(transform.up * Pitch * 20, ForceMode.Force);
             //rigidbody.AddTorque(transform.right * Yaw * 20, ForceMode.Force);
             //rigidbody.AddTorque(Pitch, Yaw, 0.0f, ForceMode.Force);
+
+            //FORCE FOR UP MOVEMENT//
             rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime * (Yaw / 10.0f), ForceMode.Force); //*erase comment* added time.fixeddeltatime //force *CONTINUOUS MOVEMENT IN A CIRCLE *
+            
+            //FORCE FOR RIGHT//
             rigidbody.AddTorque(Vector3.right * 100.0f * Pitch, ForceMode.Force); //horizontal works *NEED TO DO A IF BUTTON LET GO 
             Debug.Log("turning");
         }
@@ -371,14 +378,23 @@ public class SubControlRigidbody : MonoBehaviour
         {
 
             //transform.position += transform.forward * Time.fixedDeltaTime * thrust;
+
+            //FORWARD FORCE FOR DURING ENGINE OFF 
             rigidbody.AddForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime
 
+            //KEYVALUE FOR UP AND DOWN//
             UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 0.5f, 0.1f);
 
+            //KEYVALUE UP AND DOWN TURN//
             UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 0.5f, 0.1f); //.5
+
+            //KEYVALUE LEFT AND RIGHT TURN//
             LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 0.5f, 0.1f);
 
+            //CALCULATES TORQUE FOR PITCH AND YAW (UP DOWN LEFT RIGHT)
             Vector3 myTorque = new Vector3(Pitch, Yaw, 0.0f);
+            
+            //FORCE ON THE TORQUE//
             rigidbody.AddTorque(myTorque, ForceMode.Force);
         }
     }
