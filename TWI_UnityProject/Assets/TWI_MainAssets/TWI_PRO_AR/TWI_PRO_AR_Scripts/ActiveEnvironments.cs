@@ -25,16 +25,16 @@ public class ActiveEnvironments : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log("Count: " + envNames.Count);
+        //Debug.Log("Count: " + envNames.Count);
         foreach (GameObject e in envNames)
-            e.SetActive(false);
+            e.GetComponent<MeshRenderer>().enabled = false;
         for (int i = 0; i < envNames.Count; i++)
         {
             for (int j = 0; j < activeEnv.Count; j++)
             {
                 if (activeEnv[j].name == envNames[i].name)
                 {
-                    activeEnv[j].SetActive(true);
+                    activeEnv[j].GetComponent<MeshRenderer>().enabled = true;
                 }
             }
         }
@@ -43,14 +43,14 @@ public class ActiveEnvironments : MonoBehaviour {
 
     void findLayer(int fLayer)
     {
-        Debug.Log("fLayer: " + fLayer);
+        //Debug.Log("fLayer: " + fLayer);
         for (int i = 0; i < allObj.Length; i++)
         {
-            Debug.Log("OBJ: " + allObj[i].name + " Layer: " + allObj[i].layer);
+            //Debug.Log("OBJ: " + allObj[i].name + " Layer: " + allObj[i].layer);
             if (allObj[i].layer == fLayer)
             {
                 envNames.Add(allObj[i]);
-                Debug.Log("BUTTS");
+                //Debug.Log("BUTTS");
             }
         }
 
@@ -64,4 +64,15 @@ public class ActiveEnvironments : MonoBehaviour {
     {
         activeEnv.Insert(index, envItem);
     }
+
+	public bool checkActive(GameObject check){
+		for (int i = 0; i < activeEnv.Count; i++) {
+			if (check == activeEnv[i]) {
+				Debug.Log ("True");
+				return true;
+			}
+		}
+		Debug.Log ("False");
+		return false;
+	}
 }

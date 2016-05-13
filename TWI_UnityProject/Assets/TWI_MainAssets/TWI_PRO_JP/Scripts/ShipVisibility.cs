@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using System.Collections;
 
 /**
@@ -17,33 +17,37 @@ using System.Collections;
 
 public class ShipVisibility : MonoBehaviour {
 
-	[Range(0,100f)] private static float myVisibility = 0f;
-	[Range(0,100f)] private static float myTagPercent = 0f;
-	private static bool amTagged = false;
-	private static GameObject myShip;
+    [Range(0, 100f)]
+    private static float myVisibility = 0f;
+    [Range(0, 100f)]
+    private static float myTagPercent = 0f;
+    private static bool amTagged = false;
+    private static bool seenByMother = false;
+    private static GameObject myShip;
 
-	public static void SetVisibility(float n) { myVisibility = n; }
-	public static void AddVisibility(float n) { myVisibility += n; }
-	public static float GetVisibility() { return myVisibility; }
+    public static void SetVisibility(float n) { myVisibility = n; }
+    public static void AddVisibility(float n) { myVisibility += n; }
+    public static float GetVisibility() { return myVisibility; }
 
-	public static void SetTagPercent(float n) { myTagPercent = n; }
-	public static void AddTagPercent(float n) { myTagPercent += n; }
-	public static float GetTagPercent() { return myTagPercent; }
+    public static void SetTagPercent(float n) { myTagPercent = n; }
+    public static void AddTagPercent(float n) { myTagPercent += n; }
+    public static float GetTagPercent() { return myTagPercent; }
 
-	public static void SetTagged(bool b) { amTagged = b; }
-	public static bool GetTagged() { return amTagged; }
+    public static void SetTagged(bool b) { amTagged = b; }
+    public static bool GetTagged() { return amTagged; }
+    public static void SetMotherSeen(bool b) { seenByMother = b; }
+    public static bool GetMotherSeen() { return seenByMother; }
 
-	public static void SetShip(GameObject g) { myShip = g; }
-	public static GameObject GetShip() { return myShip; }
-	public static GameObject GetCamera() { return Camera.main.gameObject; }
-	public static Vector3 GetShipPos() { return myShip.transform.position; }
+    public static void SetShip(GameObject g) { myShip = g; }
+    public static GameObject GetShip() { return myShip; }
+    public static Vector3 GetShipPos() { return myShip.transform.position; }
 
-	void Awake() {
-		myVisibility = 0f;
-		myTagPercent = 0f;
-		amTagged = false;
-		myShip = GameObject.FindGameObjectWithTag ( "Player" );
-	}
+    void Awake() {
+        myVisibility = 0f;
+        myTagPercent = 0f;
+        amTagged = false;
+        myShip = GameObject.FindGameObjectWithTag("Player");
+    }
 }
 
 /// <comment>
