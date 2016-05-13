@@ -9,6 +9,7 @@ public class WallCollision : MonoBehaviour {
 	void OnCollisionEnter(Collision col){
 		if (col.collider == subCol) {
 			subRes.setCabinPressure(wallPressure);
+            
 		}
 	}
 }
