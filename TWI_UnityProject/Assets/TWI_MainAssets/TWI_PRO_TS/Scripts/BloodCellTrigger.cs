@@ -1,22 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//If the cockpit enters a trigger the local velocity of the 
-//particle in the mesh emitter should increase/decrease
-//in the "Z" 
 
 public class BloodCellTrigger : MonoBehaviour
 {
+    public Transform WindForce;
 
-    public Vector3 localVelocity;
-    public bool enabled;
-
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider updateRotation)
     {
     
-        if (other.tag == "BloodParticles")//I'm assuming that the cockpit is the player
+        if (updateRotation.tag == "WindSwoosh")
         {
-            ParticleSystem.VelocityOverLifetimeModule.enabled.z = localVelocity;
+            WindForce.eulerAngles = updateRotation.transform.forward;
+            Debug.Log("Changing Rotation");
         }
     }
 }
