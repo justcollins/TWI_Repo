@@ -9,7 +9,11 @@ public class AStarNode : MonoBehaviour {
     public AStarNode[] initialNeighbors;
     private List<AStarNode> _neighbors = new List<AStarNode>();
     public float radius;
+
+    [Header("Visibility Options")]
     public bool visible;
+    public bool showNeighbors = false;
+
     private AStarNode _parent;
 
     public float fCost {
@@ -51,6 +55,14 @@ public class AStarNode : MonoBehaviour {
         if (visible) {
             Gizmos.color = new Color(0f, 1f, 1f, 0.4f);
             Gizmos.DrawSphere(transform.position, radius);
+        }
+
+        if (showNeighbors) {
+            foreach (AStarNode n in initialNeighbors) {
+                if (n != null) {
+                    Gizmos.DrawLine(transform.position, n.transform.position);
+                }
+            }
         }
     }
 }
