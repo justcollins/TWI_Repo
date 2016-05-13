@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,6 +13,7 @@ public class AStarNode : MonoBehaviour {
     [Header("Visibility Options")]
     public bool visible;
     public bool showNeighbors = false;
+    //public bool showName = false;
 
     private AStarNode _parent;
 
@@ -60,6 +61,7 @@ public class AStarNode : MonoBehaviour {
         if (showNeighbors) {
             foreach (AStarNode n in initialNeighbors) {
                 if (n != null) {
+                    Gizmos.color = new Color(0f, 1f, 1f, 0.5f);
                     Gizmos.DrawLine(transform.position, n.transform.position);
                 }
             }
