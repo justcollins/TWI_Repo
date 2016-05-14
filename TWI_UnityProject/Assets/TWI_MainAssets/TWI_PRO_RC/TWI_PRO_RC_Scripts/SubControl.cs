@@ -10,7 +10,8 @@ public class SubControl : MonoBehaviour {
     public GameObject exteriorLights;
     public GameObject interiorLights;
     private KeyboardManager keyboard;
-	
+	private SoundManager Sound;
+
     [HeaderAttribute("ship values")]
 	float UpDownVelocity 			= 0.0f; 
 	public float maxThrustValue;		//Max value to reach for thruster
@@ -22,7 +23,7 @@ public class SubControl : MonoBehaviour {
 	float UpDownValue;
 	float UpDown;
 	float yUpDown;
-	
+
 	float Pitch;
 	float UpDownTurn;
 	float yUpDownTrun;
@@ -45,7 +46,7 @@ public class SubControl : MonoBehaviour {
 	float yLeftRightTurn;
 
 	
-	bool isEngineOn = false;
+	public bool isEngineOn = false;
 
     bool ForBack = true;
 
@@ -64,6 +65,7 @@ public class SubControl : MonoBehaviour {
     void Start()
     {
         keyboard = FindObjectOfType<KeyboardManager>();
+		Sound = FindObjectOfType<SoundManager> ();
         exteriorLights.SetActive(false);
         interiorLights.SetActive(false);
         minThrustValue = -maxThrustValue/2;
@@ -111,6 +113,7 @@ public class SubControl : MonoBehaviour {
         //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
         if (Input.GetKeyDown(keyboard.EngineOn) && subRes.getShipEnergy() > 0)
             isEngineOn = !isEngineOn;
+			Sound.PlayEngine = !Sound.PlayEngine;
 
         ////////////////////////ACTIVATION OF LIGHTS INSIDE AND OUTSIDE////////////////////////
         if (subRes.getShipEnergy() > 0) {

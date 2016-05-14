@@ -7,7 +7,7 @@ public class SubControlRigidbody : MonoBehaviour
 {
 
     //For Turn on and off the engine
-    public Submarine_Resources subRes;
+    private Submarine_Resources subRes;
     public GameObject exteriorLights;
     public GameObject interiorLights;
     private KeyboardManager keyboard;
@@ -67,7 +67,11 @@ public class SubControlRigidbody : MonoBehaviour
     private bool keys;
 
     private void Awake() {
+<<<<<<< HEAD:TWI_UnityProject/Assets/TWI_MainAssets/TWI_PRO_RC/TWI_PRO_RC_Scripts/SubControlRigidbody.cs
 
+=======
+		subRes = FindObjectOfType<Submarine_Resources>();
+>>>>>>> refs/remotes/origin/master:TWI_UnityProject/Assets/TWI_MainAssets/TWI_PRO_AZ/TWI_PRO_AZ_Scripts/SubControlRigidbody.cs
         rigidbody = GetComponent<Rigidbody>();
     }
 
