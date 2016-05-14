@@ -7,13 +7,15 @@ public class SubControlRigidbody : MonoBehaviour
 {
 
     //For Turn on and off the engine
-    public Submarine_Resources subRes;
+    private Submarine_Resources subRes;
     public GameObject exteriorLights;
     public GameObject interiorLights;
     private KeyboardManager keyboard;
-    private new Rigidbody rigidbody;
 
-    [HeaderAttribute("ship values")]
+    private Rigidbody rigidbody;
+    //public Rigidbody rb;
+
+    [HeaderAttribute("ship values")]    
     float UpDownVelocity = 0.0f;
     public float maxThrustValue;		//Max value to reach for thruster
     private float minThrustValue;       //Min value for the thruster
@@ -61,22 +63,44 @@ public class SubControlRigidbody : MonoBehaviour
 
     private float curTime = 0.0f;
     private float maxTime = 1.0f;
+    public float maxAV = 10;
+    private bool keys;
 
     private void Awake() {
+		subRes = FindObjectOfType<Submarine_Resources>();
         rigidbody = GetComponent<Rigidbody>();
     }
 
     void Start()
     {
+        //for keyboard manager, lights, min thrust, and max angular velocity 
         keyboard = FindObjectOfType<KeyboardManager>();
         exteriorLights.SetActive(false);
         interiorLights.SetActive(false);
-        minThrustValue = -maxThrustValue / 2;
+        minThrustValue = -maxThrustValue / 2; 
+        rigidbody.maxAngularVelocity = maxAV;
     }
 
     void Update()
     {
         ShipValueUpdate();
+
+        if (keys == false)
+        {   
+            //This is where the ship rotate should stop
+            rigidbody.angularVelocity = Vector3.zero;
+
+        }
+
+        if (Input.GetKeyUp(keyboard.Up) &&
+            Input.GetKeyUp(keyboard.Down) &&
+            Input.GetKeyUp(keyboard.Left) &&
+            Input.GetKeyUp(keyboard.Right))
+        {
+            keys = false;
+
+
+        }
     }
 
     void FixedUpdate()
@@ -86,6 +110,7 @@ public class SubControlRigidbody : MonoBehaviour
         rigidbody.AddForce(worldForce * bloodForce);
     }
 
+    //strafe clamping
     void setStrafeLimit()
     {
         cPitchMin = Pitch;
@@ -123,16 +148,31 @@ public class SubControlRigidbody : MonoBehaviour
         }
     }
 
+    /*
+     * KeyCode A or B is just the button press
+     * Value is the passed in will be the new update value
+     * _float is the value you want to increase or decrease by
+     */ 
     float KeyValue(KeyCode A, KeyCode B, float Value, float yValue, float _float, float SmoothTime)
     {
         if (Input.GetKey(A))
+        {
             Value -= Time.deltaTime * _float;
+        }
         else if (Input.GetKey(B))
+        {
             Value += Time.deltaTime * _float;
+        }
         else
+        {
+            Debug.Log("This happenes");
             Value = Mathf.SmoothDamp(Value, 0, ref yValue, SmoothTime);
+            Value = Value * (-1);
+            //rigidbody.angularVelocity = Vector3.zero;
+        }
 
         Value = Mathf.Clamp(Value, -1, 1);
+        keys = true;
         return Value;
     }
 
@@ -140,6 +180,7 @@ public class SubControlRigidbody : MonoBehaviour
     {
         //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
         if (Input.GetKeyDown(keyboard.EngineOn) && subRes.getShipEnergy() > 0)
+
             isEngineOn = !isEngineOn;
 
         ////////////////////////ACTIVATION OF LIGHTS INSIDE AND OUTSIDE////////////////////////
@@ -202,8 +243,8 @@ public class SubControlRigidbody : MonoBehaviour
 
             }
 
-            //smooth braking
-            if (ForBack)
+            //smooth braking for movement//
+            if (ForBack) 
             {
                 if (thrust <= 0f)
                     thrust += 0.3f;
@@ -294,36 +335,58 @@ public class SubControlRigidbody : MonoBehaviour
                 thrust = minThrustValue;
         }
     }
-
+    //////////////////// TO TRY TO GET SPEED OF THE SHIP ROTATION USING WHEEL VELOCITY (TEST)/////////////
+    
+    Vector3 CalcWheelVelocity(Vector3 localWheelPos)
+    {
+        return rigidbody.GetPointVelocity(transform.TransformPoint(localWheelPos));
+    }
+   
     private void ShipRigidbodyUpdate() {
         if (isEngineOn)
         {
+
+           //////////////// VELO GETS THE SPEED OF THE ROTATION  ////////////////
+            Vector3 velo = CalcWheelVelocity(transform.position);
+
+            
+           //note to self up/down = x axis, left/right = y
+
             /////////////////////////// FORWARD MOVEMENT ///////////////////////
             //transform.position += transform.forward * Time.fixedDeltaTime * thrust; // for moving forward
-            rigidbody.AddForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
+            rigidbody.AddRelativeForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
 
-
-            UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 0.1f);
-
+           //UPDOWN//
+           // UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 1.5f, 1.0f);
+            
+            //UPDOWN'S TURNING WHEN YOU PRESS UP OR DOWN//
             UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 1.5f, 0.1f);
-            LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
-
-            //Pitch//
-            Pitch += UpDownTurn; //* Time.fixedDeltaTime;
+            Pitch += UpDownTurn * Time.fixedDeltaTime;
             Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);
+            //LEFT RIGHTS TURNING WHEN YOU PRESS LEFT OR RIGHT//
+            LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 1.5f, 0.1f);
+            Yaw += LeftRightTurn * Time.fixedDeltaTime;
+            
+            //Pitch ***CONTROLS THE UP AND DOWN***//
+            //Pitch = Pitch + UpDownTurn;
+            //* Time.fixedDeltaTime //same as yaw comment
+            //CLAMPS THE PITCH ***CONTROLLS THE LEFT// 
+            
 
             //Yaw//
-            Yaw += LeftRightTurn; //* Time.fixedDeltaTime;
+           //* Time.fixedDeltaTime; doesnt have it normally so if it doesnt work take out time....
 
-            //Rotation//
-            //transform.rotation =
-            //    Quaternion.Slerp(transform.rotation,
-            //              Quaternion.Euler(Pitch, Yaw, 0.0f), Time.fixedDeltaTime * 1.5f);
-            //rigidbody.AddTorque(transform.up * Pitch * 20, ForceMode.Force);
-            //rigidbody.AddTorque(transform.right * Yaw * 20, ForceMode.Force);
-            //rigidbody.AddTorque(Pitch, Yaw, 0.0f, ForceMode.Force);
-            rigidbody.AddTorque(Vector3.up * Time.fixedDeltaTime  * Yaw, ForceMode.Force); //*erase comment* added time.fixeddeltatime  
-            rigidbody.AddTorque(Vector3.right * 100.0f * Pitch, ForceMode.Force);
+           
+
+            //CALCULATES TORQUE FOR PITCH AND YAW (UP DOWN LEFT RIGHT)
+            Vector3 myTorque = new Vector3(Pitch, Yaw, 0.0f);
+            Debug.Log(myTorque);
+
+            
+            //FORCE ON THE TORQUE//
+            rigidbody.AddRelativeTorque(myTorque, ForceMode.Force);
+            
+           
             
         }
 
@@ -332,26 +395,25 @@ public class SubControlRigidbody : MonoBehaviour
         {
 
             //transform.position += transform.forward * Time.fixedDeltaTime * thrust;
-            rigidbody.AddForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime  
 
+            //FORWARD FORCE FOR DURING ENGINE OFF 
+            rigidbody.AddRelativeForce(transform.forward * Time.fixedDeltaTime * thrust, ForceMode.Acceleration); //*erase comment* added time.fixeddeltatime
+
+            //KEYVALUE FOR UP AND DOWN//
             UpDown = KeyValue(keyboard.Up, keyboard.Down, UpDown, yUpDown, 0.5f, 0.1f);
 
-            UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 0.5f, 0.1f);
+            //KEYVALUE UP AND DOWN TURN//
+            UpDownTurn = KeyValue(keyboard.Up, keyboard.Down, UpDownTurn, yUpDownTrun, 0.5f, 0.1f); //.5
+
+            //KEYVALUE LEFT AND RIGHT TURN//
             LeftRightTurn = KeyValue(keyboard.Left, keyboard.Right, LeftRightTurn, yLeftRightTurn, 0.5f, 0.1f);
 
-            //Pitch Value engine off//
-            Pitch += UpDownTurn * Time.fixedDeltaTime;
-            Pitch = Mathf.Clamp(Pitch, pitchMin, pitchMax);
-
-            //Yaw engine off//
-            Yaw += LeftRightTurn * Time.fixedDeltaTime;
-
-            //rotation engine off//
-            //transform.rotation =
-            //    Quaternion.Slerp(transform.rotation,
-            //                     Quaternion.Euler(Pitch, Yaw, 0), Time.fixedDeltaTime * 0.5f);
+            //CALCULATES TORQUE FOR PITCH AND YAW (UP DOWN LEFT RIGHT)
             Vector3 myTorque = new Vector3(Pitch, Yaw, 0.0f);
-            rigidbody.AddTorque(myTorque, ForceMode.Force);
+            
+            
+            //FORCE ON THE TORQUE//
+            rigidbody.AddRelativeTorque(myTorque, ForceMode.Force);
         }
     }
 
