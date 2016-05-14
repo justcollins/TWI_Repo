@@ -70,6 +70,8 @@ public class Radar : MonoBehaviour {
 	public Light[] lt;
 	public float amplitude;
 	public int Location = 0;
+		
+	public bool SoundCheck = false;
 
 //Starts When Program Runs
 	void Start ()
@@ -137,10 +139,12 @@ public class Radar : MonoBehaviour {
 //Listening for Player Input
             if (Input.GetKeyDown(keyboard.LeftMouse) && ShortRadarFired == false && ShortRadarActive == true)
 			{
+				SoundCheck= true;
 				StartCoroutine (ShortRangeRoutine ());	//Starts the Short Range Radar for 10 Seconds
 			}
             else if (Input.GetKeyDown(keyboard.LeftMouse) && LongRadarFired == false && LongRadarActive == true)
 			{
+				SoundCheck= true;
 				StartCoroutine (Recharge ());			//Starts the Long Range Radar for 10 Seconds
 			}
 //Changing Radar States
@@ -200,8 +204,6 @@ public class Radar : MonoBehaviour {
 //Long Range Radar
 			if (dist >= radarRange && LongRadarActive ==true) 		//If the Object is Outside Short Radar Range	
 			{
-				//float phi = Time.time / duration * 2 * Mathf.PI;
-				//float amplitude = Mathf.Cos(phi) * 0.5F + 0.5F;
 
 				float dX = centerPos.x - virusPos.x; 														//X Coordinate Offset
 				float dZ = centerPos.z - virusPos.z;														//Z Coordinate Offset

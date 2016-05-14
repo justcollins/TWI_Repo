@@ -32,6 +32,7 @@ public class ShieldAndLazer : MonoBehaviour
     private Color Over;
 
 	public bool PlayLazer = false;
+	public bool PlayShield = false;
 
     void Start()
     {
@@ -76,8 +77,12 @@ public class ShieldAndLazer : MonoBehaviour
                 }
                 else if (EM.getLaserState() == 0) 
                 {
+
                     laserObj.SetActive(false);
                     shieldObj.SetActive(true);
+
+					PlayShield = true;
+
                     if (enTimer >= enMaxTime)
                     {
                         sub.setEnergyLevel(-0.5f);
@@ -122,7 +127,10 @@ public class ShieldAndLazer : MonoBehaviour
             else if (check == false)
             {
 				PlayLazer = false;
+				PlayShield = false;
+
 				Sound.PlayLas = false;
+				Sound.PlayShie = false;
                 elapsedTime += Time.deltaTime;
 
                 if (elapsedTime >= 0.1)
