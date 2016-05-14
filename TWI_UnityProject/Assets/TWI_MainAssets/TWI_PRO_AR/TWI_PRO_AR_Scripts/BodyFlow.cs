@@ -24,8 +24,13 @@ public class BodyFlow : MonoBehaviour {
     private EnvironmentManager envManager;
     private Submarine_Resources subRes;
     public GameObject[] activeEnv;
-    private ActiveEnvironments envMan;
+<<<<<<< HEAD
+   // private ActiveEnvironments envMan;
     public GameObject currentZone;
+=======
+    private ActiveEnvironments envMan;
+    //public GameObject currentZone;
+>>>>>>> master
 
 
     void Start()
@@ -34,7 +39,7 @@ public class BodyFlow : MonoBehaviour {
         shipLights = GameObject.FindObjectOfType<ShipLights>();
         envManager = GameObject.FindObjectOfType<EnvironmentManager>();
         subRes = GameObject.FindObjectOfType<Submarine_Resources>();
-        envMan = GameObject.FindObjectOfType<ActiveEnvironments>();
+   //     envMan = GameObject.FindObjectOfType<ActiveEnvironments>();
         if (!shipCol)
         {
             shipCol = myShip.GetComponent<Collider>();
@@ -55,7 +60,7 @@ public class BodyFlow : MonoBehaviour {
             envManager.ChangeFog(fogDensity, fogColor);
             for (int i = 0; i < activeEnv.Length; i++)
             {
-                envMan.addToActive(activeEnv[i], i);
+    //            envMan.addToActive(activeEnv[i], i);
             }
             //Debug.Log(myShip.getSectionInt());
         }

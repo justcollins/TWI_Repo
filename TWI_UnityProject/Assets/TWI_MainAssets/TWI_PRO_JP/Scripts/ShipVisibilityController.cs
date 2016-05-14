@@ -1,4 +1,4 @@
-﻿﻿using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -17,6 +17,7 @@ public class ShipVisibilityController : MonoBehaviour {
     public KeyCode addTagPercentage;
     public KeyCode removeTagPercentage;
     public KeyCode switchTagBool;
+    public KeyCode switchSeenBool;
 
     public Slider visibilitySlider;
     public Slider tagPercentSlider;
@@ -29,6 +30,7 @@ public class ShipVisibilityController : MonoBehaviour {
         ManipulateVisiblity();
         ManipulateTagPercentage();
         ManipulateTagBool();
+        ManipulateSeenBool();
         if (gui) {
             UpdateGUI();
         }
@@ -59,6 +61,12 @@ public class ShipVisibilityController : MonoBehaviour {
     void ManipulateTagBool() {
         if (Input.GetKeyDown(switchTagBool)) {
             ShipVisibility.SetTagged(!ShipVisibility.GetTagged());
+        }
+    }
+
+    void ManipulateSeenBool() {
+        if (Input.GetKeyDown(switchSeenBool)) {
+            ShipVisibility.SetMotherSeen(!ShipVisibility.GetMotherSeen());
         }
     }
 
