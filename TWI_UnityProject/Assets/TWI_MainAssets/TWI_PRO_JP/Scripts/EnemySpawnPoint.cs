@@ -26,7 +26,7 @@ public class EnemySpawnPoint : MonoBehaviour {
             if (type == EnemyType.Macrophage) {
                 myEnemyObject.GetComponent<EnemyMovement>().chasee = firstWaypoint;
                 myEnemyObject.GetComponent<EnemyHealth>().ResetHealth();
-            } else if (type == EnemyType.Tagger) {
+            } else if (type == EnemyType.Tagger_IGG) {
 				//myEnemyObject = Instantiate(myEnemy.gameObject, transform.position, transform.rotation) as GameObject;
 
 				StartCoroutine(TurnOnOffBoidController(3.0f));

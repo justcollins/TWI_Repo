@@ -17,7 +17,11 @@ public class IntConverter : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+<<<<<<< HEAD
 //		Locator (BF.currentZone);
+=======
+		//Locator (BF.currentZone);
+>>>>>>> master
 
 	}
 
