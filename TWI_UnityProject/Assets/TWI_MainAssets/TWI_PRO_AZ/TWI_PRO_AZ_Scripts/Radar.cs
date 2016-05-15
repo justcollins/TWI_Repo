@@ -298,7 +298,7 @@ IEnumerator ShortRangeRoutine()
 //Long Range Radar Routine
 IEnumerator LongRangeRoutine(Image Indicator, float dist, Text Distance)
 	{
-		if (fired = false) 
+		if (fired == false) 
 			{fired=true;}
 
 		Color idc = Indicator.color;

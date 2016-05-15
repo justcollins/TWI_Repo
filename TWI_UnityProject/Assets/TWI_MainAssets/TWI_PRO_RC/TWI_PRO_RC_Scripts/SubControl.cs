@@ -112,8 +112,10 @@ public class SubControl : MonoBehaviour {
         //Debug.Log(thrust);
         //FOR CHECKING IF ENGINE IS ON AND SHIP HAS ENERGY//
         if (Input.GetKeyDown(keyboard.EngineOn) && subRes.getShipEnergy() > 0)
+        {
             isEngineOn = !isEngineOn;
-			Sound.PlayEngine = !Sound.PlayEngine;
+            //Sound.PlayEngine = !Sound.PlayEngine;
+        }
 
         ////////////////////////ACTIVATION OF LIGHTS INSIDE AND OUTSIDE////////////////////////
         if (subRes.getShipEnergy() > 0) {
