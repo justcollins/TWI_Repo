@@ -16,17 +16,7 @@ public class IntConverter : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-<<<<<<< HEAD
-
-//<<<<<<< HEAD
-//		Locator (BF.currentZone);
-///=======
 		//Locator (BF.currentZone);
-//>>>>>>> master
-
-=======
-		//Locator (BF.currentZone);
->>>>>>> refs/remotes/origin/master
 	}
 
 	public void Locator(GameObject CurZone)

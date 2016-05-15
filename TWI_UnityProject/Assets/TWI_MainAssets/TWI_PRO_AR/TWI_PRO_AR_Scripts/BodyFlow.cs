@@ -24,18 +24,8 @@ public class BodyFlow : MonoBehaviour {
     private EnvironmentManager envManager;
     private Submarine_Resources subRes;
     public GameObject[] activeEnv;
-<<<<<<< HEAD
-//<<<<<<< HEAD
-   // private ActiveEnvironments envMan;
-    public GameObject currentZone;
-//=======
     private ActiveEnvironments envMan;
     //public GameObject currentZone;
-//>>>>>>> master
-=======
-    private ActiveEnvironments envMan;
-    //public GameObject currentZone;
->>>>>>> refs/remotes/origin/master
 
 
     void Start()
