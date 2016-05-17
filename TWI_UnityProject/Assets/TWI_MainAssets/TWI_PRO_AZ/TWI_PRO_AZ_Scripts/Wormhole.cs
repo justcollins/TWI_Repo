@@ -5,7 +5,7 @@ public class Wormhole : MonoBehaviour {
 
 
 	public GameObject[] Wormholes;
-
+    public Blink bl;
     private bool timer= false;
 	private Transform[] Warps;
 	private int Warp;
@@ -13,7 +13,7 @@ public class Wormhole : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-
+        bl = FindObjectOfType<Blink>();
 	}
 	
 	// Update is called once per frame
@@ -30,6 +30,7 @@ public class Wormhole : MonoBehaviour {
             if (timer == false)
             {
                 transform.position = Wormholes[Warp+1].transform.position;
+                bl.blinkArea = true;
                 Hello();
             }
 
@@ -39,6 +40,7 @@ public class Wormhole : MonoBehaviour {
             if (timer == false)
             {
 				transform.position = Wormholes[Warp-1].transform.position;
+                bl.blinkArea = false;
                 Hello();
             }
         }

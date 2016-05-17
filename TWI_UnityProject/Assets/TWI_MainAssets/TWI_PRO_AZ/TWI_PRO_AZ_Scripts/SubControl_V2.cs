@@ -54,7 +54,7 @@ void Start () {
 		MaxSpeed = TopSpeed;									//Set Max Speed to be Top Speed
 		BoostTopSpeed = TopSpeed + 2;							//Make Boost Top Speed Greater than Top Speed
 		boost = boostVal;										//Reset Boost
-		rb.centerOfMass = com.transform.position;
+		
 	}
 	void FixedUpdate(){
 
