@@ -16,10 +16,14 @@ public class EnemyHealth : MonoBehaviour {
     public float maxHealth = 100;
     private float health;
 
+    private Submarine_Resources submarineResources;
+    private EnemySpawnPoint respawnPoint;
+
     [Header("Death")]
     public GameObject[] deathPrefab = null;
 
     #region Accessors and Mutators
+    public void ResetHealth() { health = maxHealth; }
     public void SetHealth(float h) { health = h; }
     public void AddHealth(float h) { health += h; }
     public float GetHealth() { return health; }
@@ -28,11 +32,36 @@ public class EnemyHealth : MonoBehaviour {
 
     void Awake() {
         health = maxHealth;
+        submarineResources = FindObjectOfType<Submarine_Resources>();
+
+        if (GetComponent<EnemyRespawn>()) {
+            respawnPoint = GetComponent<EnemyRespawn>().point;
+        }
     }
 
     void Update() {
         if (health <= 0) {
-            Death();
+            if (GetComponent<EnemyRespawn>()) {
+                RDeath();
+            } else {
+                Death();
+            }
+            
+        }
+    }
+
+    void RDeath() {
+        switch ((int)type) {
+            case 0:
+                break;
+
+            case 1: //tagger
+                break;
+
+            case 2: //macrophage
+                transform.position = new Vector3 ( 9999, 9999, 9999 );
+                respawnPoint.SetIDied(true);
+                break;
         }
     }
 
