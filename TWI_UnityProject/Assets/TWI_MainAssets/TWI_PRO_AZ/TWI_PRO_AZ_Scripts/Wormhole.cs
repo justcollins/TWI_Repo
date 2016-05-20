@@ -9,6 +9,7 @@ public class Wormhole : MonoBehaviour {
     private bool timer= false;
 	private Transform[] Warps;
 	private int Warp;
+    public Sprite WarpImage;
 
 	// Use this for initialization
 	void Start () {
@@ -18,7 +19,8 @@ public class Wormhole : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-       
+
+        WarpImage = GetComponent<WarpImage>();
 		Warp = ClosestWarp (Wormholes);
 
 	}
@@ -50,6 +52,7 @@ public class Wormhole : MonoBehaviour {
     {
         timer = true;
         yield return new WaitForSeconds(5);
+        //WarpImage.alpha = 0; // make alpha of image //get material first before i can access the alpha
         timer = false;
     }
 	
@@ -60,6 +63,7 @@ public class Wormhole : MonoBehaviour {
 
 		int targetNumber = 0;
 
+
 		for (int i = 0; i < Wormholes.Length; i++) 
 		{
 			float thisDistance = Vector3.Distance(Wormholes[i].transform.position,transform.position);
@@ -67,6 +71,11 @@ public class Wormhole : MonoBehaviour {
 			{
 				closestDistance = thisDistance;
 				targetNumber = i;
+
+                if (closestDistance < 25)
+                {
+                    //Change alpha, over time ,aplha = 255; 
+                }
 
 			}
 		}

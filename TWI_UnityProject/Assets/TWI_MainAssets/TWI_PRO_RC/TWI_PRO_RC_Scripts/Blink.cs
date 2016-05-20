@@ -72,7 +72,7 @@ void OnTriggerStay()
         {
             eyes.enabled = true;
             Debug.Log("were waiting");
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.05f);
             Debug.Log("were done with the corutine");
             eyes.enabled = false;
             Image = false;
