@@ -1,22 +1,31 @@
-﻿/*
- * Current problem is the value for the sound is not currently subtracting correctly.
- * I need a variable for that.
- * Right now it simply subtract one due to the -- or ++
+﻿/* PROGRAMMER	:	Kien Ngo
+ * FILE			:	BlurOxyDown.cs
+ * DATE			:	April 28, 2016
+ * PURPOSE		:	This will display a random image within a certain time.
  * 
- */ 
-
+ * NOTE:
+ * Requires to import Unity's Standard Assets --> Effects --> ImageEffects--> Scripts
+ *      ColorCorrectionCurves.cs
+ * 
+ * 
+ * INSTRUCTION:
+ * 1. Require ColorCorrectionCurves.cs script first. Look at NOTE
+ * 2. Place the ColorCorrectionCurves script on the main camera and choose the color you want to use
+ * 3. Place this script on the player
+ * 4. Change the Subt value to how much you want to increase and decrease in value
+ * 5. Change the percentage value so the script know when to take in affect.
+ * 6. You can change the min Saturation value 0 is the lowest and 1 is the highest for recommendation
+ * 7. Value_per_click is for debugging purpose.
+ */
 
 using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.ImageEffects;
-using UnityEngine.Audio;
 
 public class BlurOxyDown : MonoBehaviour
 {
-    //Get rid of this later and make it private. Our reference only.
-    [Header("Submarine Resources")]
-    public Submarine_Resources sub_res;
-    public AudioMixer masterMixer;
+    //[Header("Submarine Resources")]
+    private Submarine_Resources sub_res; //Use to get the Submarine_Resource component info.
 
     [Header("Tweak Value")]
     [Tooltip("This is how much you would like to subtract from the Saturation Value")]
@@ -28,23 +37,9 @@ public class BlurOxyDown : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float percentage = 0.1f;
 
-    public float maxSnd = 20.0f;
-    public float minSnd = -80.0f;
-    public float sndSub = 1.0f;
-
-
     [Tooltip("Minimum Saturation Value that the saturation will go down to.")]
     [Range(0.0f, 1.0f)]
     public float minSaturationValue = 0.0f;
-
-    //Test purpose
-    [Range(-80.0f, 20.0f)]
-    public float bgm = 0.0f;
-
-    [Range(-80.0f, 20.0f)]
-    public float sndTurbine = 0.0f;
-
-
 
     /*
      * Temporary this value is use to change the oxygen level when you press A
@@ -58,8 +53,8 @@ public class BlurOxyDown : MonoBehaviour
      * It is only for monitoring other values without switching to it.
      * Will be remove later.
      */ 
-    [Tooltip("DO NOT TWEAK ANY VALUES DOWN HERE")]
-    [Header("Debugging Purposes")]
+    //[Tooltip("DO NOT TWEAK ANY VALUES DOWN HERE")]
+    //[Header("Debugging Purposes")]
     public float oxygenValue;
     public float saturationValue;
 
@@ -67,6 +62,9 @@ public class BlurOxyDown : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        if (subt < 0.0f)
+            subt = 0.001f;
+
         sub_res = GetComponent<Submarine_Resources>();
         oxygenValue = sub_res.getOxygenLevel();
         saturationValue = Camera.main.GetComponent<ColorCorrectionCurves>().saturation;
@@ -75,65 +73,39 @@ public class BlurOxyDown : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Take this condition out in the real game
         if (Input.GetKeyDown(KeyCode.P))
             sub_res.setOxygenLevel(-value_per_click);
 
         oxygenValue = sub_res.getOxygenLevel();
+
+        //This guarantee that the oxygen level will never go below 0
+        if (oxygenValue <= 0.0f)
+        {
+            oxygenValue = 0.0f;
+            sub_res.setOxygenLevel(oxygenValue);
+        }
 
         //If the Oxygen goes below a certain percentage subtract
         if (oxygenValue <= (sub_res.maxOxygen * percentage))
         {
             //if oxygen goes below zero we want the saturation to equal only the minimum saturation
             if (oxygenValue <= 0.0f || Camera.main.GetComponent<ColorCorrectionCurves>().saturation < minSaturationValue)
-            {
                 Camera.main.GetComponent<ColorCorrectionCurves>().saturation = minSaturationValue;
-                //SetTurbineLevel(maxSnd);
-            }
             else
-            {
                 Camera.main.GetComponent<ColorCorrectionCurves>().saturation -= subt;
-                //if (sndSub <= maxSnd)
-                //    SetTurbineLevel(sndSub++);
-                //else
-                //    SetTurbineLevel(maxSnd);
-            }
         }
         //If the Oxygen is above a certain percentage add oxygen
         else if (oxygenValue > (sub_res.maxOxygen * percentage))
         {
-            if (oxygenValue >= sub_res.maxOxygen)
-            {
+            if (oxygenValue >= sub_res.maxOxygen || Camera.main.GetComponent<ColorCorrectionCurves>().saturation > 1.0f)
                 Camera.main.GetComponent<ColorCorrectionCurves>().saturation = 1.0f;
-               // SetTurbineLevel(minSnd);
-            }
             else
-            {
                 Camera.main.GetComponent<ColorCorrectionCurves>().saturation += subt;
-                //if (sndSub <= minSnd)
-
-                //    SetTurbineLevel(sndSub--);
-                //else
-                //    SetTurbineLevel(minSnd);
-            }
         }
 
         saturationValue = Camera.main.GetComponent<ColorCorrectionCurves>().saturation;
 
-        SetTurbineLevel(sndTurbine);
-        SetMusicLevel(bgm);
-
     }//End of Update()
-
-    public void SetTurbineLevel(float turbinglvl)
-    {
-        //The value string you called in the mixer, value to set it to be
-        masterMixer.SetFloat("Turbine", turbinglvl);
-        
-    }
-
-    public void SetMusicLevel(float musiclvl)
-    {
-       masterMixer.SetFloat("BGM", musiclvl);
-    }
 
 }//End of BlurOxyDown
