@@ -17,9 +17,12 @@ public class WindZoneAccelerator : MonoBehaviour {
 
     private float thrust;
     private SubControl subThrust;
-    private WindZone wind; 
-    private float forwardleft;
-    private float forwardright;
+    private WindZone wind;
+ 
+    private float LeftBack;
+    private float RightBack;
+    private float LeftFront;
+    private float RightFront;
 
 
 	void Start () 
@@ -27,6 +30,7 @@ public class WindZoneAccelerator : MonoBehaviour {
         subThrust = FindObjectOfType<SubControl>();
         thrust = subThrust.thrust;
         wind = GetComponent<WindZone>();
+        LeftBack = Transform.localRotation.x; 
         /*forwardleft = transform.localRotation + 90;*/
         //wind.windMain = 5.0f;
 	}
@@ -36,10 +40,26 @@ public class WindZoneAccelerator : MonoBehaviour {
         //For the particles matching the ship movement/speed
         thrust = subThrust.thrust;
         Debug.Log("Thrust: " + thrust);
-        wind.windMain = thrust;     
+        wind.windMain = thrust;
+        
 
         //For the effect of the particles moving more realistically 
-        transform.localRotation = 
+        //like a car driving in traffic, the car speeds up and the rest seems to 
+        //slow down & the car slows down and the cars around it seem to speed up.
+        //The ship and particles needs to be able to reproduce this situtation. 
+      
+        //If players forward direction is inbetween these two points then 
+        //increase "main" speed of Windzone
+ 
+        //If players forward direction is inbetween these two points then 
+        //decrease "main" speed of Windzone
+
+        //For the front... X is greater than 270 and X is less than 90
+        //For the back... X is less than 270 and X is greater than 90
+
+
+
+       
     }
 	
 }
