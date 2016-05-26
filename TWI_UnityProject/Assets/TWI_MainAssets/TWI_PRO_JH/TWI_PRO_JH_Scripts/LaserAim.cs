@@ -15,6 +15,10 @@ public class LaserAim : MonoBehaviour {
 
         targetPos = transform.position;
 
+        //Clamp the movement of the laserguide
+        //targetPos.x = Mathf.Clamp(transform.position.x,-2.0f, 2.0f);
+        //targetPos.y = Mathf.Clamp(transform.position.y, -2.0f, 2.0f);
+
     }
 
     void Update(){
@@ -24,8 +28,10 @@ public class LaserAim : MonoBehaviour {
 
         //laser guide moves with mouse position values
         targetPos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance+50);
+        
         //use 2d space
         targetPos = Camera.main.ScreenToWorldPoint(targetPos);
+        
         //updates location of laserguide
         transform.position = Vector3.Lerp(transform.position, targetPos, speed * Time.deltaTime);
     }
