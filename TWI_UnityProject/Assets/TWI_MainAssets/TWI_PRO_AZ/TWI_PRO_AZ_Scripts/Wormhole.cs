@@ -1,33 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Wormhole : MonoBehaviour {
 
+    private Blink bl;
 
 	public GameObject[] Wormholes;
-    public Blink bl;
     private bool timer= false;
 	private Transform[] Warps;
 	private int Warp;
-    public Sprite WarpImage;
+    public Image WarpImage;
+
+    public float alpha;
+
 
 	// Use this for initialization
-	void Start () {
-
+	void Start () 
+    {
+        WarpImage = GetComponent<Image>();
         bl = FindObjectOfType<Blink>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        WarpImage = GetComponent<WarpImage>();
 		Warp = ClosestWarp (Wormholes);
 
 	}
     void OnCollisionEnter(Collision col)
     {
 
-		if (col.gameObject.tag == "Entry" && Warp % 2 == 0)
+        if (col.gameObject.tag == "Entry" && Warp % 2 == 0) 
         {
             if (timer == false)
             {
@@ -37,7 +41,7 @@ public class Wormhole : MonoBehaviour {
             }
 
         }
-		else if (col.gameObject.tag == "Exit" && Warp % 2 != 0)
+		else if (col.gameObject.tag == "Exit" && Warp % 2 != 0) 
         {
             if (timer == false)
             {
@@ -54,6 +58,14 @@ public class Wormhole : MonoBehaviour {
         yield return new WaitForSeconds(5);
         //WarpImage.alpha = 0; // make alpha of image //get material first before i can access the alpha
         timer = false;
+    }
+
+    void ImageAlpha
+    {
+        //Color alpha = image.color;
+        //alpha.a = 0;
+        //Image.Color = alpha;
+
     }
 	
 
@@ -72,7 +84,7 @@ public class Wormhole : MonoBehaviour {
 				closestDistance = thisDistance;
 				targetNumber = i;
 
-                if (closestDistance < 25)
+                if (closestDistance < 10)
                 {
                     //Change alpha, over time ,aplha = 255; 
                 }

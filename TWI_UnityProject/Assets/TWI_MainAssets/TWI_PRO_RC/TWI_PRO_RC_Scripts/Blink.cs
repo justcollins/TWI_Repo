@@ -10,11 +10,38 @@ public class Blink : MonoBehaviour {
 public bool blinkArea = false;
 public bool Image = false;
 
-public Image eyes;
-public bool eyebool;
+public Image flash;
+public bool flashBool;
 
 public float curTime = 0;
 public float maxTime = 2;
+
+// Use this for initialization
+void Start()
+{
+
+    flash.enabled = false;
+}
+
+// Update is called once per frame
+void Update()
+{
+    flashBool = flash.enabled;
+    if (blinkArea)
+    {
+        Debug.Log("I Blinked");
+        curTime += Time.deltaTime;
+        Debug.Log("CurTime: " + curTime);
+        Debug.Log("MaxTime: " + maxTime);
+        if (curTime >= maxTime)
+        {
+            Debug.Log("ITS WORKING");
+            Image = true;
+            StartCoroutine(FlashImage());
+        }
+
+    }
+}
 
 void OnTriggerEnter(Collider col)
 {
@@ -34,47 +61,17 @@ void OnTriggerExit(Collider col)
     }
 }
 
-void OnTriggerStay()
-{
-    //blinkArea = 
-}
-
-	// Use this for initialization
-	void Start () {
-
-        eyes.enabled = false;
-	}
-	
-	// Update is called once per frame
-	void Update () 
-    {
-        eyebool = eyes.enabled;
-        if(blinkArea)
-        {
-            Debug.Log("I Blinked");
-            curTime +=Time.deltaTime;
-            Debug.Log("CurTime: " + curTime);
-            Debug.Log("MaxTime: " + maxTime);
-            if(curTime >= maxTime)
-            {
-                Debug.Log("ITS WORKING");
-                Image = true;
-                StartCoroutine(FlashImage());
-            }
-            
-         }
-     }
 
     IEnumerator FlashImage() 
     {
         Debug.Log("were in the corutine");
         if (Image)
         {
-            eyes.enabled = true;
+            flash.enabled = true;
             Debug.Log("were waiting");
             yield return new WaitForSeconds(0.05f);
             Debug.Log("were done with the corutine");
-            eyes.enabled = false;
+            flash.enabled = false;
             Image = false;
             curTime = 0;
         }
