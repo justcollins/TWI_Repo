@@ -25,9 +25,13 @@ public class BodyFlow : MonoBehaviour {
     private Submarine_Resources subRes;
     public GameObject[] activeEnv;
     private ActiveEnvironments envMan;
+<<<<<<< HEAD
     public float windX, windY, windZ;
     private WindZoneAccelerator windZone;
     //public GameObject currentZone;
+=======
+    public GameObject currentZone;
+>>>>>>> refs/remotes/origin/master
 
 
     void Start()
@@ -36,8 +40,12 @@ public class BodyFlow : MonoBehaviour {
         shipLights = GameObject.FindObjectOfType<ShipLights>();
         envManager = GameObject.FindObjectOfType<EnvironmentManager>();
         subRes = GameObject.FindObjectOfType<Submarine_Resources>();
+<<<<<<< HEAD
         envMan = GameObject.FindObjectOfType<ActiveEnvironments>();
         windZone = GameObject.FindObjectOfType<WindZoneAccelerator>();
+=======
+   //     envMan = GameObject.FindObjectOfType<ActiveEnvironments>();
+>>>>>>> refs/remotes/origin/master
         if (!shipCol)
         {
             shipCol = myShip.GetComponent<Collider>();
@@ -58,7 +66,7 @@ public class BodyFlow : MonoBehaviour {
             envManager.ChangeFog(fogDensity, fogColor);
             for (int i = 0; i < activeEnv.Length; i++)
             {
-                envMan.addToActive(activeEnv[i], i);
+    //            envMan.addToActive(activeEnv[i], i);
             }
             windZone.setWindDir(windX, windY, windZ);
             //Debug.Log(myShip.getSectionInt());
