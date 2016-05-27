@@ -131,7 +131,7 @@ public class WindZoneAccelerator : MonoBehaviour {
 
     public void setWindDir(float wX, float wY, float wZ)
     {
-        wind.transform.rotation.Set(wX, wY, wZ, 1);
+        wind.transform.rotation = new Quaternion(wX, wY, wZ, 1);
     }
 
 }
