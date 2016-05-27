@@ -41,7 +41,7 @@ public class WindZoneAccelerator : MonoBehaviour {
         //For the particles matching the ship movement/speed
         thrust = subThrust.thrust;
         //Debug.Log("Thrust: " + thrust);
-        //wind.windMain = thrust;
+        wind.windMain = thrust;
         Debug.Log("Local Rotation: " + subThrust.gameObject.transform.localEulerAngles.y);
         
 
@@ -95,7 +95,7 @@ public class WindZoneAccelerator : MonoBehaviour {
             || (subThrust.gameObject.transform.localEulerAngles.y <= LeftCircle && subThrust.gameObject.transform.localEulerAngles.y <= RightCircle))
             {
                 Debug.Log("Facing Forward");
-                wind.windMain = 50; 
+                wind.windMain = 5; 
             }
 
             //Back Part
@@ -103,7 +103,7 @@ public class WindZoneAccelerator : MonoBehaviour {
         else if (subThrust.gameObject.transform.localEulerAngles.y >= LeftCircle && subThrust.gameObject.transform.localEulerAngles.y <= RightCircle)
             {
                 Debug.Log("Facing Backward");
-                wind.windMain = 1;
+                wind.windMain = 5;
             }
 
             else
