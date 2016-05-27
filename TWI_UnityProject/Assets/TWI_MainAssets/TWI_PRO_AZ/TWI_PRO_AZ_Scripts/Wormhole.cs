@@ -12,13 +12,11 @@ public class Wormhole : MonoBehaviour {
 	private int Warp;
     public Image WarpImage;
 
-    public float alpha;
-
+    
 
 	// Use this for initialization
 	void Start () 
     {
-        WarpImage = GetComponent<Image>();
         bl = FindObjectOfType<Blink>();
 	}
 	
@@ -58,14 +56,6 @@ public class Wormhole : MonoBehaviour {
         yield return new WaitForSeconds(5);
         //WarpImage.alpha = 0; // make alpha of image //get material first before i can access the alpha
         timer = false;
-    }
-
-    void ImageAlpha
-    {
-        //Color alpha = image.color;
-        //alpha.a = 0;
-        //Image.Color = alpha;
-
     }
 	
 

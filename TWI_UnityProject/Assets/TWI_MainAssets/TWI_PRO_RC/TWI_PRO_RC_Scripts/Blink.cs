@@ -13,6 +13,9 @@ public bool Image = false;
 public Image flash;
 public bool flashBool;
 
+[Range(0.0f, 1.0f)]
+public float alpha;
+
 public float curTime = 0;
 public float maxTime = 2;
 
@@ -71,11 +74,29 @@ void OnTriggerExit(Collider col)
             Debug.Log("were waiting");
             yield return new WaitForSeconds(0.05f);
             Debug.Log("were done with the corutine");
+            //change the color
+
+            yield return new WaitForSeconds(0.05f);
+            ImageAlpha(0.75f);
+            yield return new WaitForSeconds(0.05f);
+            ImageAlpha(0.50f);
+            yield return new WaitForSeconds(0.05f);
+            ImageAlpha(0.25f);
+
+          
             flash.enabled = false;
+            ImageAlpha(1.0f); //sets up the alpha back to 1
             Image = false;
             curTime = 0;
         }
 
     }
-	}
+
+     void ImageAlpha (float iAlpha)
+        {
+            Color color = flash.color;
+            color.a = iAlpha ;
+            flash.color = color;
+        }
+}
 
