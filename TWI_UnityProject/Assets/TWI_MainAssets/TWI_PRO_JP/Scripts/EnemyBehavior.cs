@@ -2,7 +2,7 @@
 using System.Collections;
 
 /**
- *   Enemy Behavior Class
+ *   Enemy Sight Class
  *   10 Feb 2016
  *   Jose Pascua
  * 
@@ -33,6 +33,8 @@ public class EnemyBehavior : MonoBehaviour {
     [Header("Pathfinding")]
     public bool pathfinding;
     private bool pathfindingOverride;
+    public bool wandering = false;
+    private int wanderIndex;
 
     void Awake() {
         switch (type) {
@@ -90,6 +92,7 @@ public class EnemyBehavior : MonoBehaviour {
             pr = GetComponent<PathRequester>();
             pr.active = true;
         }
+
         nextWaypoint = em.chasee;
     }
 
@@ -112,8 +115,19 @@ public class EnemyBehavior : MonoBehaviour {
                 em.chaseePos = ShipVisibility.GetShip().transform.position;
             }
         } else {
-            em.chaseePos = nextWaypoint.position;
-            em.chasee = nextWaypoint;
+            if (wandering && pathfinding) {
+                if (Vector3.Distance(ShipVisibility.GetShip().transform.position, transform.position) > pr.waypointRadius) {
+                    //if it is far enough, just go through the waypoints
+                    em.chaseePos = pr.currWaypoint;
+                } else {
+                    //if it is close enough, just steer to the player
+                    wanderIndex = Random.Range(0, AStarMap.instance.map.Length);
+                    pr.target = AStarMap.instance.map[wanderIndex].transform;
+                }
+            } else {
+                em.chaseePos = nextWaypoint.position;
+                em.chasee = nextWaypoint;
+            }
         }
     }
 
@@ -163,8 +177,11 @@ public class EnemyBehavior : MonoBehaviour {
      *  -Attacks the player depending on how close the player is
      * 
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
     private EnemyMovement masterMacrophage;
-    private float distanceThreshold;
+    [Header("IGM Only")]
+    public float distanceThreshold;
+    private Vector3 igmOffset;
 
     private void BodyguardAwake() {
         em = GetComponent<EnemyMovement>();
@@ -175,6 +192,10 @@ public class EnemyBehavior : MonoBehaviour {
         if (Vector3.Distance(ShipVisibility.GetShip().transform.position, transform.position) > distanceThreshold) {
             em.chaseePos = ShipVisibility.GetShip().transform.position;
         } else {
+            igmOffset = new Vector3(Random.Range(-distanceThreshold, distanceThreshold),
+                                    Random.Range(-distanceThreshold, distanceThreshold),
+                                    Random.Range(-distanceThreshold, distanceThreshold));
+            igmOffset = igmOffset.normalized * distanceThreshold;
             em.chaseePos = masterMacrophage.transform.position;
         }
     }
@@ -199,6 +220,7 @@ public class EnemyBehavior : MonoBehaviour {
             pr = GetComponent<PathRequester>();
             pr.active = true;
         }
+
         nextWaypoint = em.chasee;
     }
 
@@ -218,8 +240,22 @@ public class EnemyBehavior : MonoBehaviour {
                 em.chaseePos = ShipVisibility.GetShip().transform.position;
             }
         } else {
-            em.chaseePos = nextWaypoint.position;
-            em.chasee = nextWaypoint;
+            if (wandering && pathfinding) {
+                wanderIndex = Random.Range(0, AStarMap.instance.map.Length - 1);
+                pr.target = AStarMap.instance.map[wanderIndex].transform;
+
+                if (Vector3.Distance(ShipVisibility.GetShip().transform.position, transform.position) > pr.waypointRadius) {
+                    //if it is far enough, just go through the waypoints
+                    em.chaseePos = pr.currWaypoint;
+                } else {
+                    //if it is close enough, just steer to the player
+                    wanderIndex = Random.Range(0, AStarMap.instance.map.Length);
+                    pr.target = AStarMap.instance.map[wanderIndex].transform;
+                }
+            } else {
+                em.chaseePos = nextWaypoint.position;
+                em.chasee = nextWaypoint;
+            }
         }
     }
 
@@ -252,7 +288,7 @@ public class EnemyBehavior : MonoBehaviour {
                         nextWaypoint = other.transform;
                     }
                 }
-                break;
+                break; // end of case 2
 
             case 5: // arbiter minion
                 if (other.GetComponent<Waypoint>()) { // checks to see if it collided with a waypoint
@@ -279,7 +315,7 @@ public class EnemyBehavior : MonoBehaviour {
                         nextWaypoint = other.transform;
                     }
                 }
-                break; // end of case 2 (macrophage)
+                break; // end of case 5
         }
     }
 
