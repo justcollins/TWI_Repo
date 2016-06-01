@@ -84,16 +84,16 @@ public class EnvironmentManager : MonoBehaviour {
 
         if (RenderSettings.fogDensity == newDensity && RenderSettings.fogColor == newColor) {
             changingFog = false;
-            Debug.Log("not changing fog");
+            //Debug.Log("not changing fog");
         } else {
-            Debug.Log("changing fog");
+            //Debug.Log("changing fog");
             RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, newDensity, Time.time / 1.0f);
             RenderSettings.fogColor = Color.Lerp(RenderSettings.fogColor, newColor, Time.time / 1.0f);
         }
     }
 
     public void ChangeFog(float newFogDensity, Color newFogColor) {
-        Debug.Log("Time to change");
+        //Debug.Log("Time to change");
         changingFog = true;
         newDensity = newFogDensity;
         newColor = newFogColor;
