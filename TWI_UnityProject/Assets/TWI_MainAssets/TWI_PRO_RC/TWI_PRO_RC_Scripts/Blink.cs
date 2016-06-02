@@ -62,16 +62,21 @@ void OnTriggerEnter(Collider col)
     {
       
             
-            flash.enabled = true;            
+            flash.enabled = true;
+            yield return new WaitForSeconds(0.5f);
+            ImageAlpha(1.0f);
+
             yield return new WaitForSeconds(0.5f);           
             ImageAlpha(0.75f);
             yield return new WaitForSeconds(0.5f);
             ImageAlpha(0.50f);
             yield return new WaitForSeconds(0.5f);
-            ImageAlpha(0.25f);          
+            ImageAlpha(0.25f); 
+                 
             flash.enabled = false;
+
             Worm.SetJump(true);
-            ImageAlpha(1.0f); //sets up the alpha back to 1          
+            ImageAlpha(1.0f); //reset alphas     
             curTime = 0;
             PlayCo = true;
         
