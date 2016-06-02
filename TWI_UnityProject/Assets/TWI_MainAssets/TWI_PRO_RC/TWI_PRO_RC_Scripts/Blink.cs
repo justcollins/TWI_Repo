@@ -18,12 +18,15 @@ public float alpha;
 
 public float curTime = 0;
 public float maxTime = 2;
+private bool PlayCo = false;
 
+private Wormhole Worm;
 // Use this for initialization
 void Start()
 {
 
     flash.enabled = false;
+    Worm = FindObjectOfType<Wormhole>();
 }
 
 // Update is called once per frame
@@ -32,63 +35,46 @@ void Update()
     flashBool = flash.enabled;
     if (blinkArea)
     {
-        Debug.Log("I Blinked");
+       
         curTime += Time.deltaTime;
-        Debug.Log("CurTime: " + curTime);
-        Debug.Log("MaxTime: " + maxTime);
-        if (curTime >= maxTime)
-        {
-            Debug.Log("ITS WORKING");
-            Image = true;
+        if (curTime >= maxTime && PlayCo == false)
+        {        
             StartCoroutine(FlashImage());
         }
 
     }
 }
 
+
+
 void OnTriggerEnter(Collider col)
 {
-    if (col.gameObject.tag == "Player")
+    if (col.gameObject.tag == "Entry" || col.gameObject.tag == "Exit")
     {
         blinkArea = true;
         Debug.Log("EnterTrigger");
     }
 }
 
-void OnTriggerExit(Collider col)
-{
-    if (col.gameObject.tag == "Player")
-    {
-        blinkArea = false;
-        Debug.Log("ExitTrigger");
-    }
-}
 
 
     IEnumerator FlashImage() 
     {
-        Debug.Log("were in the corutine");
-        if (Image)
-        {
-            flash.enabled = true;
-            Debug.Log("were waiting");
-            yield return new WaitForSeconds(0.05f);
-            Debug.Log("were done with the corutine");
-            //change the color
-
-            yield return new WaitForSeconds(0.05f);
+      
+            
+            flash.enabled = true;            
+            yield return new WaitForSeconds(0.5f);           
             ImageAlpha(0.75f);
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.5f);
             ImageAlpha(0.50f);
-            yield return new WaitForSeconds(0.05f);
-            ImageAlpha(0.25f);
-
-          
+            yield return new WaitForSeconds(0.5f);
+            ImageAlpha(0.25f);          
             flash.enabled = false;
-            ImageAlpha(1.0f); //sets up the alpha back to 1
-            Image = false;
+            Worm.SetJump(true);
+            ImageAlpha(1.0f); //sets up the alpha back to 1          
             curTime = 0;
-        }
+            PlayCo = true;
+        
 
     }
 

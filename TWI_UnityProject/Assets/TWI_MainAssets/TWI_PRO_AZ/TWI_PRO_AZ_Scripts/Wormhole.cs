@@ -10,10 +10,10 @@ public class Wormhole : MonoBehaviour {
     private bool timer= false;
 	private Transform[] Warps;
 	private int Warp;
-    public Image WarpImage;
+   
+    private bool Jump = false;
 
     
-
 	// Use this for initialization
 	void Start () 
     {
@@ -26,36 +26,27 @@ public class Wormhole : MonoBehaviour {
 		Warp = ClosestWarp (Wormholes);
 
 	}
-    void OnCollisionEnter(Collision col)
+
+    void OnTriggerEnter(Collider col)
     {
 
-        if (col.gameObject.tag == "Entry" && Warp % 2 == 0) 
+        if (col.gameObject.tag == "Entry" && Warp % 2 == 0 ) 
         {
             if (timer == false)
             {
-                transform.position = Wormholes[Warp+1].transform.position;
-                bl.blinkArea = true;
-                Hello();
+                transform.position = Wormholes[Warp+1].transform.position;          
+               
             }
 
         }
-		else if (col.gameObject.tag == "Exit" && Warp % 2 != 0) 
+        else if (col.gameObject.tag == "Exit" && Warp % 2 != 0) 
         {
             if (timer == false)
             {
-				transform.position = Wormholes[Warp-1].transform.position;
-                bl.blinkArea = false;
-                Hello();
+				transform.position = Wormholes[Warp-1].transform.position;            
+               
             }
         }
-    }
-	
-    IEnumerator Hello()
-    {
-        timer = true;
-        yield return new WaitForSeconds(5);
-        //WarpImage.alpha = 0; // make alpha of image //get material first before i can access the alpha
-        timer = false;
     }
 	
 
@@ -83,5 +74,8 @@ public class Wormhole : MonoBehaviour {
 		}
 		return targetNumber; 
 	}
-
+    public void SetJump(bool jmp) 
+    {
+        Jump = jmp;
+    }
 }
