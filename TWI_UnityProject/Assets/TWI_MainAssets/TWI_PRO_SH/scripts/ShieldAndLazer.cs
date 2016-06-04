@@ -15,6 +15,7 @@ public class ShieldAndLazer : MonoBehaviour
     public Submarine_Resources sub;
     private EngineMonitor EM;
     private KeyboardManager keyboard;
+	private SoundManager Sound;
 
     private float timer = 0f;
     private float chillTimer = 0f;
@@ -30,10 +31,13 @@ public class ShieldAndLazer : MonoBehaviour
 
     private Color Over;
 
+	public bool PlayLazer = false;
+
     void Start()
     {
         EM = GameObject.FindObjectOfType<EngineMonitor>();
         keyboard = FindObjectOfType<KeyboardManager>();
+		Sound = FindObjectOfType<SoundManager> ();
 
         Overheat = Text.GetComponent<Image>();      
 
@@ -45,6 +49,7 @@ public class ShieldAndLazer : MonoBehaviour
 
     void Update()
     {
+
         if (EM.getLaserState() == 1 || EM.getLaserState() == 0)
         {
             bg.transform.SetSiblingIndex(2);
@@ -54,13 +59,15 @@ public class ShieldAndLazer : MonoBehaviour
 
                 enTimer += Time.deltaTime;
                 timer += Time.deltaTime;
-
-                
+			               
 
                 if (EM.getLaserState() == 1)
                 {
                     shieldObj.SetActive(false);
                     laserObj.SetActive(true);
+					PlayLazer = true;
+
+
                     if (enTimer >= enMaxTime)
                     {
                         sub.setEnergyLevel(-0.3f);
@@ -114,6 +121,8 @@ public class ShieldAndLazer : MonoBehaviour
 
             else if (check == false)
             {
+				PlayLazer = false;
+				Sound.PlayLas = false;
                 elapsedTime += Time.deltaTime;
 
                 if (elapsedTime >= 0.1)
@@ -212,4 +221,13 @@ public class ShieldAndLazer : MonoBehaviour
        
         return timer;
     }
+
+public void SetWeapons(bool set)
+	{
+		check = set;
+	}
+	public bool GetWeapons()
+	{
+		return check;
+	}
 }

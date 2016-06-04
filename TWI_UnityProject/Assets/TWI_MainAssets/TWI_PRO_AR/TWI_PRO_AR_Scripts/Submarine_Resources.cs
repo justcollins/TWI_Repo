@@ -12,6 +12,11 @@ public class Submarine_Resources : MonoBehaviour {
     public float maxOxygen;
     public float maxEnergy;
 
+	[Range(-5.0f, 0.0f)] public float engineDraw;
+	[Range(-5.0f, 0.0f)] public float spotDraw;
+	[Range(-5.0f, 0.0f)] public float instDraw;
+	[Range(0.0f, 5.0f)] public float passiveEnergyGain;
+
     private float curTime;
     private float maxTime = 1.0f;
     public SubControl subCon;
@@ -34,19 +39,19 @@ public class Submarine_Resources : MonoBehaviour {
         {
             if (shipEnergy <= maxEnergy)
             {
-                setEnergyLevel(1.75f);
+                setEnergyLevel(passiveEnergyGain);
 
                 if (subCon.getEngineOn())
                 {
-                    setEnergyLevel(-2.0f);
+                    setEnergyLevel(engineDraw);
                 }
                 if (monitor.getSpotState() == 1)
                 {
-                    setEnergyLevel(-1.0f);
+                    setEnergyLevel(spotDraw);
                 }
                 if (monitor.getInstState() == 1)
                 {
-                    setEnergyLevel(-0.5f);
+                    setEnergyLevel(instDraw);
                 }
             }
             else
