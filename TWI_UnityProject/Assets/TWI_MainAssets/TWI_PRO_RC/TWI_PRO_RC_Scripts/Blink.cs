@@ -21,42 +21,35 @@ public float maxTime = 2;
 private bool PlayCo = false;
 
 private Wormhole Worm;
+
 // Use this for initialization
 void Start()
 {
 
-    flash.enabled = false;
-    Worm = FindObjectOfType<Wormhole>();
+    flash.enabled = false; // image named flash is not enabled (not showing)
+    Worm = FindObjectOfType<Wormhole>(); // defines worm in my script to access wormhole (andrijas script)
 }
 
-// Update is called once per frame
 void Update()
 {
-    flashBool = flash.enabled;
+    flashBool = flash.enabled; 
     if (blinkArea)
     {
-       
         curTime += Time.deltaTime;
-        if (curTime >= maxTime && PlayCo == false)
+        if (curTime >= maxTime && PlayCo == false) //if time is more or equals max time and coroutine is not false 
         {        
-            StartCoroutine(FlashImage());
+            StartCoroutine(FlashImage()); //excecutes the coroutine
         }
-
     }
 }
-
-
 
 void OnTriggerEnter(Collider col)
 {
-    if (col.gameObject.tag == "Entry" || col.gameObject.tag == "Exit")
+    if (col.gameObject.tag == "Entry" || col.gameObject.tag == "Exit") // checks if the ship entered the collider named entry and exit 
     {
-        blinkArea = true;
-        Debug.Log("EnterTrigger");
+        blinkArea = true; //if that is true the trigger becomes the blink area  
     }
 }
-
-
 
     IEnumerator FlashImage() 
     {
@@ -64,26 +57,26 @@ void OnTriggerEnter(Collider col)
             
             flash.enabled = true;
             yield return new WaitForSeconds(0.5f);
-            ImageAlpha(1.0f);
+            ImageAlpha(1.0f); //starts off with full opacity 
 
             yield return new WaitForSeconds(0.5f);           
-            ImageAlpha(0.75f);
+            ImageAlpha(0.75f);                                  // fade starts with .75
             yield return new WaitForSeconds(0.5f);
-            ImageAlpha(0.50f);
-            yield return new WaitForSeconds(0.5f);
-            ImageAlpha(0.25f); 
+            ImageAlpha(0.50f);                                  // fade to .5
+        yield return new WaitForSeconds(0.5f);
+            ImageAlpha(0.25f);                                  //fades to .25
                  
-            flash.enabled = false;
+            flash.enabled = false;                              //image named flash becomes false 
 
-            Worm.SetJump(true);
-            ImageAlpha(1.0f); //reset alphas     
-            curTime = 0;
-            PlayCo = true;
+            Worm.SetJump(true);                                 // the worm (andrijas script) jump image becomes true 
+            ImageAlpha(1.0f);                                   //reset alphas     
+            curTime = 0;                                        // the time also resets to 0
+            PlayCo = true;// check for if coroutine is working 
         
 
     }
 
-     void ImageAlpha (float iAlpha)
+     void ImageAlpha (float iAlpha) // for accessing the alpha of my image
         {
             Color color = flash.color;
             color.a = iAlpha ;
