@@ -1,6 +1,14 @@
 ﻿﻿using UnityEngine;
 using System.Collections;
 
+/**
+ *   Enemy Spawn Point Class
+ *   2 June 2016
+ *   Jose Pascua
+ * 
+ *   Attach this to a respawn point
+ */
+
 public class EnemySpawnPoint : MonoBehaviour {
 
     public EnemyType type;
@@ -23,16 +31,32 @@ public class EnemySpawnPoint : MonoBehaviour {
         if (iDied == true) {
             //Debug.Log ("Died");
             if (type == EnemyType.Macrophage) {
-                myEnemyObject.GetComponent<EnemyMovement>().chasee = firstWaypoint;
+                if (myEnemyObject.GetComponent<EnemyMovement>()) {
+                    myEnemyObject.GetComponent<EnemyMovement>().chasee = firstWaypoint;
+                }
+
+                myEnemyObject.GetComponent<EnemyHealth>().ResetHealth();
+            } else if (type == EnemyType.ArbiterMinion) {
+
                 myEnemyObject.GetComponent<EnemyHealth>().ResetHealth();
             } else if (type == EnemyType.Tagger_IGG) {
                 //myEnemyObject = Instantiate(myEnemy.gameObject, transform.position, transform.rotation) as GameObject;
-
                 StartCoroutine(TurnOnOffBoidController(3.0f));
             }
 
             myEnemyObject.transform.position = this.transform.position;
             myEnemyObject.transform.rotation = this.transform.rotation;
+
+            if (type == EnemyType.Macrophage) {
+                if (myEnemyObject.GetComponent<BasicEnemyBehavior>()) {
+                    myEnemyObject.GetComponent<BasicEnemyBehavior>().GotRespawned();
+                }
+            } else if (type == EnemyType.ArbiterMinion) {
+
+                if (myEnemyObject.GetComponent<BasicEnemyBehavior>()) {
+                    myEnemyObject.GetComponent<BasicEnemyBehavior>().GotRespawned();
+                }
+            }
 
             iDied = false;
         }

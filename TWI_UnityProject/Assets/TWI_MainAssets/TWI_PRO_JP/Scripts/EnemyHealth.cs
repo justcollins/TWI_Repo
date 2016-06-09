@@ -1,4 +1,4 @@
-﻿﻿using UnityEngine;
+﻿﻿﻿﻿using UnityEngine;
 using System.Collections;
 
 /**
@@ -14,7 +14,7 @@ public class EnemyHealth : MonoBehaviour {
 
     public EnemyType type;
     public float maxHealth = 100;
-    private float health;
+    public float health;
 
     private Submarine_Resources submarineResources;
     private EnemySpawnPoint respawnPoint;
@@ -46,39 +46,39 @@ public class EnemyHealth : MonoBehaviour {
             } else {
                 Death();
             }
-            
+
         }
     }
 
     void RDeath() {
-        switch ((int)type) {
-            case 0:
+        switch (type) {
+
+            case EnemyType.Tagger_IGG:
                 break;
 
-            case 1: //tagger
-                break;
-
-            case 2: //macrophage
-                transform.position = new Vector3 ( 9999, 9999, 9999 );
+            case EnemyType.Macrophage:
+            case EnemyType.ArbiterMinion:
+                transform.position = new Vector3(9999, 9999, 9999);
                 respawnPoint.SetIDied(true);
                 break;
         }
     }
 
     void Death() {
-        switch ((int)type) {
-            case 0:
-                break;
+        switch (type) {
 
-            case 1: //tagger
+            case EnemyType.Tagger_IGG: //tagger
                 Debug.Log(this.gameObject.name + " died from low health!");
                 BoidFlocking bf = GetComponent<BoidFlocking>();
                 bf.DestroyMe();
                 break;
 
-            case 2: //macrophage
-            case 3: //paired
-            case 4: //arbiter parasite
+            case EnemyType.ArbiterParasite:
+                GameObject.Destroy(this.gameObject);
+                break;
+
+            case EnemyType.Macrophage:
+            case EnemyType.ArbiterMinion:
                 Debug.Log(this.gameObject.name + " died from low health!");
                 if (deathPrefab != null) {
                     foreach (GameObject dp in deathPrefab) {
