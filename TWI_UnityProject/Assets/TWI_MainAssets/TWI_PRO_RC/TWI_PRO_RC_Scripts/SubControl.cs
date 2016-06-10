@@ -93,17 +93,25 @@ public class SubControl : MonoBehaviour {
 
         Yaw = Mathf.Clamp(Yaw, cYawMin, cYawMax);
 
-		if (Input.GetKey (keyboard.Up))    //move up//
-            transform.Translate(Vector3.up * 10f * Time.deltaTime);
+        if (Input.GetKey(keyboard.Up))    //move up//
+        {
+            transform.Translate(Vector3.up * thrust * Time.deltaTime); // was * 10.0f
+        }
 
-		if (Input.GetKey (keyboard.Down))  //move down//
-			transform.Translate (Vector3.down * 10f * Time.deltaTime);
+        if (Input.GetKey(keyboard.Down))  //move down//
+        {
+            transform.Translate(Vector3.down * thrust * Time.deltaTime);
+        }
 
         if (Input.GetKey(keyboard.Left))  //move left//
-			transform.Translate (Vector3.left * 10f * Time.deltaTime);
+        {
+            transform.Translate(Vector3.left * thrust * Time.deltaTime);
+        }
 
-		if (Input.GetKey (keyboard.Right)) //move right//
-			transform.Translate (Vector3.right * 10f * Time.deltaTime);
+        if (Input.GetKey(keyboard.Right)) //move right//
+        {
+            transform.Translate(Vector3.right * thrust * Time.deltaTime);
+        }
 	}
 
     ///////////////////////// ENGINE ON ////////////////////
