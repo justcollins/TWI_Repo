@@ -126,55 +126,58 @@ public class BasicEnemyBehavior : MonoBehaviour {
         while (true) {
             CheckWherePlayerIs();
 
-            if (chasing) {
-                if ((AStarMap.instance.NodeFromWorldPoint(transform.position) != null) && (AStarMap.instance.NodeFromWorldPoint(playerWasLastSeen) != null)) {
-                    if (AStarMap.instance.NodeFromWorldPoint(transform.position) != AStarMap.instance.NodeFromWorldPoint(playerWasLastSeen)) {
-                        if (showDebugMessages) {
-                            Debug.Log(gameObject.name + " is requesting path to player...");
-                        }
-                        targetIndex = 0;
-                        PathRequestManager.RequestPath(transform.position, playerWasLastSeen, OnPathFound);
-                    } else {
-                        if (showDebugMessages) {
-                            Debug.Log(gameObject.name + " going to player...");
-                        }
-                        headToPlayer = true;
-                    }
-                }
-            } else {
-                if (allowedToWander) {
-                    if (chased == false) {
-                        targetIndex = 0;
-                        chased = true;
-                        if (useWanderpoints) {
-                            // FINDS A RANDOM POINT IN THE WANDERPOINTS ARRAY
+            if (AStarMap.instance.NodeFromWorldPoint(transform.position) != null) {
+                if (chasing) {
+                    if ((AStarMap.instance.NodeFromWorldPoint(transform.position) != null) && (AStarMap.instance.NodeFromWorldPoint(playerWasLastSeen) != null)) {
+                        if (AStarMap.instance.NodeFromWorldPoint(transform.position) != AStarMap.instance.NodeFromWorldPoint(playerWasLastSeen)) {
                             if (showDebugMessages) {
-                                Debug.Log(gameObject.name + " requesting path to random point in preset array...");
+                                Debug.Log(gameObject.name + " is requesting path to player...");
                             }
-                            int mapIndex = Random.Range(0, wanderpointList.Count - 1);
-                            while (AStarMap.instance.NodeFromWorldPoint(transform.position) == AStarMap.instance.NodeFromWorldPoint(wanderpointList[mapIndex].position)) {
-                                mapIndex = Random.Range(0, wanderpointList.Count - 1);
-                            }
-
-                            PathRequestManager.RequestPath(transform.position, wanderpointList[mapIndex].transform.position, OnPathFound);
+                            targetIndex = 0;
+                            PathRequestManager.RequestPath(transform.position, playerWasLastSeen, OnPathFound);
                         } else {
-                            // FINDS A RANDOM POINT IN THE ENTIRE MAP
                             if (showDebugMessages) {
-                                Debug.Log(gameObject.name + " requesting path to random point in entire map...");
+                                Debug.Log(gameObject.name + " going to player...");
                             }
-                            int mapIndex = Random.Range(0, AStarMap.instance.map.Length - 1);
-                            PathRequestManager.RequestPath(transform.position, AStarMap.instance.map[mapIndex].transform.position, OnPathFound);
+                            headToPlayer = true;
                         }
                     }
-                } else if (allowedToPatrol) {
-                    if (chased == false) {
-                        if (showDebugMessages) {
-                            Debug.Log(gameObject.name + " is going to its next point: ");
-                        }
-                        targetIndex = 0;
-                        chased = true;
+                } else {
+                    if (allowedToWander) {
+                        if (chased == false) {
+                            //Debug.Log("LOGARITHMIC FUNCTION LOGARITHMIC FUNCTION LOGARITHMIC FUNCTION LOGARITHMIC FUNCTION LOGARITHMIC FUNCTION");
+                            targetIndex = 0;
+                            chased = true;
+                            if (useWanderpoints) {
+                                // FINDS A RANDOM POINT IN THE WANDERPOINTS ARRAY
+                                if (showDebugMessages) {
+                                    Debug.Log(gameObject.name + " requesting path to random point in preset array...");
+                                }
+                                int mapIndex = Random.Range(0, wanderpointList.Count - 1);
+                                while (AStarMap.instance.NodeFromWorldPoint(transform.position) == AStarMap.instance.NodeFromWorldPoint(wanderpointList[mapIndex].position)) {
+                                    mapIndex = Random.Range(0, wanderpointList.Count - 1);
+                                }
 
-                        PathRequestManager.RequestPath(transform.position, currPatrolpoint.transform.position, OnPathFound);
+                                PathRequestManager.RequestPath(transform.position, wanderpointList[mapIndex].transform.position, OnPathFound);
+                            } else {
+                                // FINDS A RANDOM POINT IN THE ENTIRE MAP
+                                if (showDebugMessages) {
+                                    Debug.Log(gameObject.name + " requesting path to random point in entire map...");
+                                }
+                                int mapIndex = Random.Range(0, AStarMap.instance.map.Length - 1);
+                                PathRequestManager.RequestPath(transform.position, AStarMap.instance.map[mapIndex].transform.position, OnPathFound);
+                            }
+                        }
+                    } else if (allowedToPatrol) {
+                        if (chased == false) {
+                            if (showDebugMessages) {
+                                Debug.Log(gameObject.name + " is going to its next point: ");
+                            }
+                            targetIndex = 0;
+                            chased = true;
+
+                            PathRequestManager.RequestPath(transform.position, currPatrolpoint.transform.position, OnPathFound);
+                        }
                     }
                 }
             }
@@ -192,6 +195,9 @@ public class BasicEnemyBehavior : MonoBehaviour {
 
             StopCoroutine("FollowPath");
             StartCoroutine("FollowPath");
+        } else {
+            chasing = false;
+            chased = false;
         }
     }
 
