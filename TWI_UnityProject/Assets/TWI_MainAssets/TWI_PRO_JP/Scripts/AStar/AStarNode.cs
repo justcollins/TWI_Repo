@@ -13,7 +13,6 @@ public class AStarNode : MonoBehaviour {
     [Header("Visibility Options")]
     public bool visible;
     public bool showNeighbors = false;
-    //public bool showName = false;
 
     private AStarNode _parent;
 
@@ -62,6 +61,25 @@ public class AStarNode : MonoBehaviour {
             foreach (AStarNode n in initialNeighbors) {
                 if (n != null) {
                     Gizmos.color = new Color(0f, 1f, 1f, 0.5f);
+                    Gizmos.DrawLine(transform.position, n.transform.position);
+                } else {
+                    Gizmos.color = new Color(1f, 0f, 0f, 0.6f);
+                    Gizmos.DrawCube(transform.position, Vector3.one * (radius * 0.5f));
+                }
+            }
+        }
+    }
+
+    void OnDrawGizmosSelected() {
+        if (visible) {
+            Gizmos.color = new Color(1f, 1f, 0f, 0.4f);
+            Gizmos.DrawSphere(transform.position, radius);
+        }
+
+        if (showNeighbors) {
+            foreach (AStarNode n in initialNeighbors) {
+                if (n != null) {
+                    Gizmos.color = new Color(1f, 1f, 0f, 0.4f);
                     Gizmos.DrawLine(transform.position, n.transform.position);
                 }
             }
